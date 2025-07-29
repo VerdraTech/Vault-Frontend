@@ -1,0 +1,84 @@
+
+<ion-content [fullscreen]="true">
+  <table style="width: 100%;" [formGroup]="inventoryForm">
+    <thead>
+      <tr>
+        <th style="width: 20%;" class="table-field">Name</th>
+        <th style="width: 20%;" class="table-field">Price</th>
+        <th style="width: 20%;" class="table-field">Size</th>
+        <th style="width: 20%;" class="table-field">SKU</th>
+        <th style="width: 20%;" class="table-field">Date Purchased</th>
+        <th style="width: 20%;" class="table-field">Date Sold</th>
+        <th style="width: 20%;" class="table-field">Location</th>
+        <th style="width: 20%" class="table-field"></th>
+      </tr>
+    </thead>
+    <tbody formArrayName="inventory">
+      @for (item of inventory.controls; track $index; let i = $index) {
+        <tr [formGroupName]="i">
+          <td class="table-field" >
+            <div >{{ item.value.name }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.price }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.size }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.sku }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.datePurchased }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.dateSold }}</div>
+          </td>
+          <td class="table-field" >
+            <div >{{ item.value.location }}</div>
+          </td>
+          <td class="table-field"><ion-button id="open-modal{{i}}" expand="block">Open</ion-button></td>
+        </tr>
+        <ion-content class="ion-padding">
+          <ion-modal trigger="open-modal{{i}}" [formGroupName]="i">
+            <ng-template>
+              <ion-header>
+                <ion-toolbar>
+                  <ion-buttons slot="start">
+                    <ion-button (click)="cancel()">Cancel</ion-button>
+                  </ion-buttons>
+                  <ion-title>Update</ion-title>
+                  <ion-buttons slot="end">
+                    <ion-button (click)="confirm(i)" [strong]="true">Confirm</ion-button>
+                  </ion-buttons>
+                </ion-toolbar>
+              </ion-header>
+              <ion-content class="ion-padding">
+                <ion-item>
+                  <ion-input
+                    labelPlacement="stacked"
+                    type="text"
+                    placeholder="Item Name"
+                    formControlName="name"
+                  ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-input
+                    labelPlacement="stacked"
+                    type="text"
+                    placeholder="Item Price"
+                    formControlName="price"
+                  ></ion-input>
+                </ion-item>
+              </ion-content>
+            </ng-template>
+          </ion-modal>
+          
+        </ion-content>
+      } @empty {
+        <p>There are no items</p>
+      }
+    </tbody>
+  </table>
+</ion-content>
+
