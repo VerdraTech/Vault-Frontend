@@ -10,6 +10,46 @@ export default [
     "location": "Warehouse B"
   },
   {
+    "id": 51,
+    "name": "Retro Labubu",
+    "price": 127.49,
+    "size": "N/A",
+    "sku": "5c91f46b-35e5-47d3-a550-b02a13cb7ed9",
+    "datePurchased": "2024-09-09",
+    "dateSold": "2025-01-14",
+    "location": "Warehouse B"
+  },
+  {
+    "id": 52,
+    "name": "Retro Labubu",
+    "price": 127.49,
+    "size": "N/A",
+    "sku": "5c91f46b-35e5-47d3-a550-b02a13cb7ed9",
+    "datePurchased": "2024-09-09",
+    "dateSold": "2025-01-14",
+    "location": "Warehouse B"
+  },
+  {
+    "id": 53,
+    "name": "Retro Labubu",
+    "price": 127.49,
+    "size": "N/A",
+    "sku": "5c91f46b-35e5-47d3-a550-b02a13cb7ed9",
+    "datePurchased": "2024-09-09",
+    "dateSold": "2025-01-14",
+    "location": "Warehouse B"
+  },
+  {
+    "id": 54,
+    "name": "Retro Labubu",
+    "price": 127.49,
+    "size": "N/A",
+    "sku": "5c91f46b-35e5-47d3-a550-b02a13cb7ed9",
+    "datePurchased": "2024-09-09",
+    "dateSold": "2025-01-14",
+    "location": "Warehouse C"
+  },
+  {
     "id": 2,
     "name": "Designer Sneakers",
     "price": 295.99,
@@ -215,6 +255,26 @@ export default [
     "name": "Designer Sneakers",
     "price": 299.0,
     "size": "EU 38",
+    "sku": "684579c9-b5b1-4b9b-87cb-e5e4a8615b3a",
+    "datePurchased": "2024-07-29",
+    "dateSold": "2025-03-14",
+    "location": "Store C"
+  },
+  {
+    "id": 55,
+    "name": "Designer Sneakers",
+    "price": 299.0,
+    "size": "EU 38",
+    "sku": "684579c9-b5b1-4b9b-87cb-e5e4a8615b3a",
+    "datePurchased": "2024-07-29",
+    "dateSold": "2025-03-14",
+    "location": "Store C"
+  },
+  {
+    "id": 56,
+    "name": "Designer Sneakers",
+    "price": 299.0,
+    "size": "EU 40",
     "sku": "684579c9-b5b1-4b9b-87cb-e5e4a8615b3a",
     "datePurchased": "2024-07-29",
     "dateSold": "2025-03-14",

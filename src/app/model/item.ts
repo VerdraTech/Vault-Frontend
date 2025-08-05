@@ -3,8 +3,12 @@ export interface Item {
   name?: string;
   price?: number;
   size?: string;
-  SKU?: string;
+  sku?: string;
   datePurchased?: string;
   dateSold?: string | null;
   location?: string;
+}
+
+export interface Items extends Array<Item> {
+  
 }
