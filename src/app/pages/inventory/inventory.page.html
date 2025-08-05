@@ -1,16 +1,16 @@
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [scrollX]="true">
   <table style="width: 100%;">
     <thead>
       <tr>
-        <th style="width: 17.5%" class="table-cell">Name</th>
+        <th style="width: 22.5%" class="table-cell">Name</th>
         <th style="width: 10%" class="table-cell">Price</th>
         <th style="width: 12.5%" class="table-cell">Size</th>
         <th style="width: 12.5%" class="table-cell">SKU</th>
         <th style="width: 12.5%" class="table-cell">Date Purchased</th>
         <th style="width: 12.5%" class="table-cell">Date Sold</th>
         <th style="width: 12.5%" class="table-cell">Location</th>
-        <th style="width: 10%" class="table-cell"></th>
+        <th style="width: 5%" class="table-cell"></th>
       </tr>
     </thead>
     <tbody>
@@ -42,7 +42,11 @@
           <td class="table-cell" >
             <div >{{ item[0].location }}</div>
           </td>
-          <td class="table-cell"><ion-button expand="block" (click)="openModal(i, null, item[0])">Open</ion-button></td>
+          <td class="kebab-menu-td">
+            <ion-button fill="clear" shape="round" expand="block" (click)="openModal(i, null, item[0])">
+              <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+            </ion-button>
+          </td>
         </tr>
         @if (item.length > 1 && expanded[i]) {
           @for (product of item | slice:1; track $index; let h = $index; let last = $last ) {
@@ -54,7 +58,11 @@
               <td class="table-cell">{{ product.datePurchased }}</td>
               <td class="table-cell">{{ product.dateSold }}</td>
               <td class="table-cell">{{ product.location }}</td>
-              <td class="table-cell"><ion-button expand="block" (click)="openModal(i, h, product)">Open</ion-button></td>
+              <td class="kebab-menu-td">
+                <ion-button fill="clear" shape="round" expand="block" (click)="openModal(i, h, product)">
+                  <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+                </ion-button>
+              </td>
             </tr>
           }
         }
