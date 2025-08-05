@@ -1,80 +1,63 @@
 
 <ion-content [fullscreen]="true">
-  <table style="width: 100%;" [formGroup]="inventoryForm">
+  <table style="width: 100%;">
     <thead>
       <tr>
-        <th style="width: 20%;" class="table-field">Name</th>
-        <th style="width: 20%;" class="table-field">Price</th>
-        <th style="width: 20%;" class="table-field">Size</th>
-        <th style="width: 20%;" class="table-field">SKU</th>
-        <th style="width: 20%;" class="table-field">Date Purchased</th>
-        <th style="width: 20%;" class="table-field">Date Sold</th>
-        <th style="width: 20%;" class="table-field">Location</th>
-        <th style="width: 20%" class="table-field"></th>
+        <th style="width: 17.5%" class="table-cell">Name</th>
+        <th style="width: 10%" class="table-cell">Price</th>
+        <th style="width: 12.5%" class="table-cell">Size</th>
+        <th style="width: 12.5%" class="table-cell">SKU</th>
+        <th style="width: 12.5%" class="table-cell">Date Purchased</th>
+        <th style="width: 12.5%" class="table-cell">Date Sold</th>
+        <th style="width: 12.5%" class="table-cell">Location</th>
+        <th style="width: 10%" class="table-cell"></th>
       </tr>
     </thead>
-    <tbody formArrayName="inventory">
-      @for (item of inventory.controls; track $index; let i = $index) {
-        <tr [formGroupName]="i">
-          <td class="table-field" >
-            <div >{{ item.value.name }}</div>
+    <tbody>
+      @for (item of items; track $index; let i = $index) {
+        <tr [ngClass]="item.length > 1 ? 'accordion' : ''">
+          <td class="table-cell">
+            @if (expanded[i] && item.length > 1) {
+              <ion-icon name="chevron-down" class="chevron" (click)="toggle(i)"></ion-icon>
+            } @else if (!expanded[i] && item.length > 1) {
+              <ion-icon name="chevron-forward" class="chevron" (click)="toggle(i)"></ion-icon>
+            }
+            {{ item[0].name }}
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.price }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].price }}</div>
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.size }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].size }}</div>
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.sku }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].sku }}</div>
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.datePurchased }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].datePurchased }}</div>
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.dateSold }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].dateSold }}</div>
           </td>
-          <td class="table-field" >
-            <div >{{ item.value.location }}</div>
+          <td class="table-cell" >
+            <div >{{ item[0].location }}</div>
           </td>
-          <td class="table-field"><ion-button id="open-modal{{i}}" expand="block">Open</ion-button></td>
+          <td class="table-cell"><ion-button expand="block" (click)="openModal(i, null, item[0])">Open</ion-button></td>
         </tr>
-        <ion-content class="ion-padding">
-          <ion-modal trigger="open-modal{{i}}" [formGroupName]="i">
-            <ng-template>
-              <ion-header>
-                <ion-toolbar>
-                  <ion-buttons slot="start">
-                    <ion-button (click)="cancel()">Cancel</ion-button>
-                  </ion-buttons>
-                  <ion-title>Update</ion-title>
-                  <ion-buttons slot="end">
-                    <ion-button (click)="confirm(i)" [strong]="true">Confirm</ion-button>
-                  </ion-buttons>
-                </ion-toolbar>
-              </ion-header>
-              <ion-content class="ion-padding">
-                <ion-item>
-                  <ion-input
-                    labelPlacement="stacked"
-                    type="text"
-                    placeholder="Item Name"
-                    formControlName="name"
-                  ></ion-input>
-                </ion-item>
-                <ion-item>
-                  <ion-input
-                    labelPlacement="stacked"
-                    type="text"
-                    placeholder="Item Price"
-                    formControlName="price"
-                  ></ion-input>
-                </ion-item>
-              </ion-content>
-            </ng-template>
-          </ion-modal>
-          
-        </ion-content>
+        @if (item.length > 1 && expanded[i]) {
+          @for (product of item | slice:1; track $index; let h = $index; let last = $last ) {
+            <tr class="accordion" [ngClass]="{'accordion-last-item': last}">
+              <td class="table-cell">{{ product.name }}</td>
+              <td class="table-cell">{{ product.price }}</td>
+              <td class="table-cell">{{ product.size }}</td>
+              <td class="table-cell">{{ product.sku }}</td>
+              <td class="table-cell">{{ product.datePurchased }}</td>
+              <td class="table-cell">{{ product.dateSold }}</td>
+              <td class="table-cell">{{ product.location }}</td>
+              <td class="table-cell"><ion-button expand="block" (click)="openModal(i, h, product)">Open</ion-button></td>
+            </tr>
+          }
+        }
       } @empty {
         <p>There are no items</p>
       }

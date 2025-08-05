@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Edit Item</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding" [formGroup]="itemForm">
+  <ion-item>
+    <ion-input labelPlacement="stacked" label="Item Name" placeholder="Name" formControlName="name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input labelPlacement="stacked" label="Item Price" placeholder="Price" formControlName="price"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input labelPlacement="stacked" label="Item Size" placeholder="Size" formControlName="size"></ion-input>
+  </ion-item>
+    <ion-item>
+    <ion-input labelPlacement="stacked" label="Item SKU" placeholder="SKU" formControlName="sku"></ion-input>
+  </ion-item>
+    <ion-item>
+    <ion-input labelPlacement="stacked" label="Date Purchased" placeholder="Date Purchased" formControlName="datePurchased"></ion-input>
+  </ion-item>
+    <ion-item>
+    <ion-input labelPlacement="stacked" label="Date Sold" placeholder="Date Sold" formControlName="dateSold"></ion-input>
+  </ion-item>
+    <ion-item>
+    <ion-input labelPlacement="stacked" label="Location" placeholder="Location" formControlName="location"></ion-input>
+  </ion-item>
+</ion-content>
