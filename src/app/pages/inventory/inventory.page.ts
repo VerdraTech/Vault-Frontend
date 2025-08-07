@@ -1,71 +1,57 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { IonicModule, IonModal } from '@ionic/angular';
+import { Component, inject, OnInit } from '@angular/core';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { InventoryService } from 'src/app/core/inventory/inventory.service';
-import { Item } from 'src/app/model/item';
-import { FormBuilder, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { Item, Items } from 'src/app/model/item';
+import { CommonModule, SlicePipe } from '@angular/common';
+import { ModalComponent } from 'src/app/components/modal/modal.component';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.page.html',
   styleUrls: ['./inventory.page.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, IonicModule]
+  imports: [IonicModule, SlicePipe, CommonModule]
 })
 export class InventoryPage implements OnInit {
-  @ViewChild(IonModal) modal!: IonModal;
   private inventoryService = inject(InventoryService)
-  private formBuilder = inject(FormBuilder);
-  inventoryForm = this.buildInventoryForm()
-  items!: Item[]
+  items: Items[] = [];
+  expanded: boolean[] = [];
 
-  constructor() { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     this.items = this.inventoryService.getInventory();
-    this.populateInventoryForm();
+    this.expanded = new Array(this.items.length).fill(false);
   }
 
-  buildInventoryForm() {
-    return this.formBuilder.group({
-      inventory: this.formBuilder.array([])
-    })
+  toggle(index: number) {
+    this.expanded[index] = !this.expanded[index];
   }
 
-  populateInventoryForm() {
-    if (this.items.length > 0) {
-      this.items.forEach(item => {
-        const itemForm = this.buildItemForm(item)
-        this.inventory.push(itemForm)
-      })
+  async openModal(firstIndex: number, slicedIndex: number | null, item: Item) {
+    const modal = await this.modalController.create({
+      component: ModalComponent,
+      componentProps: {
+        itemName: item.name,
+        itemPrice: item.price,
+        itemSize: item.size,
+        itemSku: item.sku,
+        datePurchased: item.datePurchased,
+        dateSold: item.dateSold,
+        itemLocation: item.location,
+      }
+    });
+    modal.present()
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      if (slicedIndex === null) {
+        this.items[firstIndex][0] = { ...data };
+      } else {
+        const secondIndex = slicedIndex + 1
+        this.items[firstIndex][secondIndex] = { ...data };
+      }
     }
-  }
-
-  buildItemForm(item: any) {
-    const itemForm =  this.formBuilder.group({
-      id: [''],
-      name: [''],
-      price: [''],
-      size: [''],
-      sku: [''],
-      datePurchased: [''],
-      dateSold: [''],
-      location: ['']
-    })
-
-    itemForm.patchValue({...item})
-    return itemForm
-  }
-
-  cancel() {
-    this.modal.dismiss(null, 'cancel');
-  }
-
-  confirm(index: number) {
-    console.log(this.inventory.controls[index].value)
-    this.modal.dismiss(null, 'confirm');
-  }
-
-  get inventory() {
-    return this.inventoryForm.controls['inventory'] as FormArray;
   }
 }

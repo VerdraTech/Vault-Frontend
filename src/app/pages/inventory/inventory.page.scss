@@ -1,7 +1,32 @@
-.table-field {
+th {
+  text-align: left;
+}
+
+.table-cell {
   padding: 0.5rem 1rem
 }
 
-th {
-  text-align: left;
+.kebab-menu-td {
+  padding: 1rem 1rem;
+}
+
+.chevron {
+  vertical-align: bottom;
+}
+
+.chevron:hover {
+  cursor: pointer;
+}
+
+.accordion-last-item {
+  box-shadow: 10px 5px 5px grey;
+}
+
+@media (prefers-color-scheme: dark) {
+  .accordion {
+    background-color: hsl(211 20 16);
+  }
+  .accordion-last-item {
+    box-shadow: none;
+  }
 }
