@@ -3,32 +3,84 @@
     <ion-buttons slot="start">
       <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
-    <ion-title>Edit Item</ion-title>
+    <ion-title>{{ action }} Item</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+      <ion-button (click)="confirm()" [strong]="true">{{ action }}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" [formGroup]="itemForm">
-  <ion-item>
-    <ion-input labelPlacement="stacked" label="Item Name" placeholder="Name" formControlName="name"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input labelPlacement="stacked" label="Item Price" placeholder="Price" formControlName="price"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input labelPlacement="stacked" label="Item Size" placeholder="Size" formControlName="size"></ion-input>
-  </ion-item>
-    <ion-item>
-    <ion-input labelPlacement="stacked" label="Item SKU" placeholder="SKU" formControlName="sku"></ion-input>
-  </ion-item>
-    <ion-item>
-    <ion-input labelPlacement="stacked" label="Date Purchased" placeholder="Date Purchased" formControlName="datePurchased"></ion-input>
-  </ion-item>
-    <ion-item>
-    <ion-input labelPlacement="stacked" label="Date Sold" placeholder="Date Sold" formControlName="dateSold"></ion-input>
-  </ion-item>
-    <ion-item>
-    <ion-input labelPlacement="stacked" label="Location" placeholder="Location" formControlName="location"></ion-input>
-  </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="10">
+        <ion-input labelPlacement="stacked" label="Name" placeholder="Air Jordan 1 Retro Low OG Zion Williamson Voodoo" formControlName="name" errorText="Name is required"></ion-input>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="10">
+        <ion-input labelPlacement="stacked" label="SKU" placeholder="DZ7292-200" formControlName="sku" errorText="SKU is required"></ion-input>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="2">
+        <ion-input labelPlacement="stacked" label="Price" placeholder="600" formControlName="price" errorText="Price is required"></ion-input>
+      </ion-col>
+      <ion-col size=2>
+        <ion-select interface="popover" labelPlacement="stacked" label="Size" placeholder="Select" formControlName="size" justify="start" errorText="Size is required">
+          @for (size of sizeOptions; track $index) {
+            <ion-select-option>{{ size }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>Date Purchased</ion-label>
+        <ion-datetime-button datetime="purchaseDate" class="calendar-btn"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="purchaseDate" formControlName="datePurchased" [showDefaultButtons]="true"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-col>
+      <ion-col>
+        <ion-label>Date Sold</ion-label>
+        <ion-datetime-button datetime="sellDate" class="calendar-btn"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="sellDate" formControlName="dateSold" [showDefaultButtons]="true"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Location" placeholder="Warehouse A" formControlName="location"></ion-input>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  @if (action === 'Add') {
+    <ion-grid>
+      <ion-row class="ion-align-items-end">
+        <ion-col >
+          <ion-checkbox labelPlacement="end" color="medium" (click)="toggleCheckbox()">Bulk Add</ion-checkbox>
+        </ion-col>
+        <ion-col >
+          <ion-select interface="popover" labelPlacement="stacked" label="Quantity" placeholder="1" formControlName="quantity" justify="start">
+            <ion-select-option>1</ion-select-option>
+            <ion-select-option>2</ion-select-option>
+            <ion-select-option>3</ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  }
 </ion-content>
