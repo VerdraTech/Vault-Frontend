@@ -20,6 +20,7 @@ ion-menu.md ion-note {
 ion-menu.md ion-list-header,
 ion-menu.md ion-note {
   padding-left: 10px;
+  color: rgb(216, 218, 224);
 }
 
 ion-menu.md ion-list#inbox-list {
@@ -58,11 +59,13 @@ ion-menu.md ion-item.selected ion-icon {
 }
 
 ion-menu.md ion-item ion-icon {
-  color: #616e7e;
+  // color: #616e7e;
+  color: rgb(216, 218, 224)
 }
 
 ion-menu.md ion-item ion-label {
   font-weight: 500;
+  color: rgb(216, 218, 224)
 }
 
 ion-menu.ios ion-content {

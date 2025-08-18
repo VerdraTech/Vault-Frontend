@@ -1,67 +1,142 @@
 
 <ion-content [fullscreen]="true" [scrollX]="true">
-  <table style="width: 100%;">
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+        <ion-searchbar placeholder="Search Items" show-clear-button="focus" [debounce]="1000" [formControl]="searchForm"></ion-searchbar>
+      </ion-col>
+      <ion-col>
+        <ion-button fill="solid" shape="round" (click)="openModal({ firstIndex: null, slicedIndex: null, item: null, role: 'Add' })">
+          Add Item
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="filter-box">
+  <ion-grid [formGroup]="filterForm">
+    <ion-row>
+      <ion-col>
+        <ion-select labelPlacement="stacked" label="Size" fill="outline" placeholder="Select" interface="popover" formControlName="size">
+          @for (size of sizeOptions; track $index) {
+            <ion-select-option>{{ size }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-col>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Location" fill="outline" placeholder="Location" formControlName="location"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-select labelPlacement="stacked" label="list" fill="outline" placeholder="Select" interface="popover" formControlName="listed">
+          <ion-select-option>Listed</ion-select-option>
+          <ion-select-option>Not Listed</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Placeholder" fill="outline"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row></ion-row>
+  </ion-grid>
+    <div class="badge-container">
+        <ion-badge>{{ this.filterForm.controls['size'].value }}</ion-badge>
+     
+        <ion-badge>{{ this.filterForm.controls['location'].value }}</ion-badge>
+      
+        <ion-badge>{{ this.filterForm.controls['listed'].value }}</ion-badge>
+      </div>
+  </div>
+  
+  <table >
     <thead>
       <tr>
-        <th style="width: 22.5%" class="table-cell">Name</th>
+        <th style="width: 17.5%" class="table-cell">Name</th>
         <th style="width: 10%" class="table-cell">Price</th>
         <th style="width: 12.5%" class="table-cell">Size</th>
         <th style="width: 12.5%" class="table-cell">SKU</th>
         <th style="width: 12.5%" class="table-cell">Date Purchased</th>
         <th style="width: 12.5%" class="table-cell">Date Sold</th>
         <th style="width: 12.5%" class="table-cell">Location</th>
-        <th style="width: 5%" class="table-cell"></th>
+        <th style="width: 10%" class="table-cell">Actions</th>
       </tr>
     </thead>
     <tbody>
-      @for (item of items; track $index; let i = $index) {
-        <tr [ngClass]="item.length > 1 ? 'accordion' : ''">
+      @for (itemsArray of queriedInventory; track $index; let i = $index) {
+        <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
           <td class="table-cell">
-            @if (expanded[i] && item.length > 1) {
-              <ion-icon name="chevron-down" class="chevron" (click)="toggle(i)"></ion-icon>
-            } @else if (!expanded[i] && item.length > 1) {
-              <ion-icon name="chevron-forward" class="chevron" (click)="toggle(i)"></ion-icon>
+            @if (expanded[i] && itemsArray.length > 1) {
+              <ion-icon name="chevron-down" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
+            } @else if (!expanded[i] && itemsArray.length > 1) {
+              <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
             }
-            {{ item[0].name }}
+            {{ itemsArray[0].name }}
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].price }}</div>
+            <div >{{ itemsArray[0].price }}</div>
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].size }}</div>
+            <div >{{ itemsArray[0].size }}</div>
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].sku }}</div>
+            <div >{{ itemsArray[0].sku }}</div>
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].datePurchased }}</div>
+            <div >{{ itemsArray[0].datePurchased }}</div>
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].dateSold }}</div>
+            <div >{{ itemsArray[0].dateSold }}</div>
           </td>
           <td class="table-cell" >
-            <div >{{ item[0].location }}</div>
+            <div >{{ itemsArray[0].location }}</div>
           </td>
-          <td class="kebab-menu-td">
-            <ion-button fill="clear" shape="round" expand="block" (click)="openModal(i, null, item[0])">
-              <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
-            </ion-button>
+          <td class="action-menu-td">
+            <ion-fab #fab style="position: relative;">
+              <ion-fab-button size="small">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+              <ion-fab-list side="start">
+                <ion-fab-button>
+                  <ion-icon name="globe"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: null }, itemsArray[0])">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="openModal({ firstIndex: i, slicedIndex: null, item: itemsArray[0], role: 'Edit' })">
+                  <ion-icon name="pencil"></ion-icon>
+                </ion-fab-button>
+              </ion-fab-list>
+            </ion-fab>
+            <ion-alert></ion-alert>
           </td>
         </tr>
-        @if (item.length > 1 && expanded[i]) {
-          @for (product of item | slice:1; track $index; let h = $index; let last = $last ) {
+        @if (itemsArray.length > 1 && expanded[i]) {
+          @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
             <tr class="accordion" [ngClass]="{'accordion-last-item': last}">
-              <td class="table-cell">{{ product.name }}</td>
-              <td class="table-cell">{{ product.price }}</td>
-              <td class="table-cell">{{ product.size }}</td>
-              <td class="table-cell">{{ product.sku }}</td>
-              <td class="table-cell">{{ product.datePurchased }}</td>
-              <td class="table-cell">{{ product.dateSold }}</td>
-              <td class="table-cell">{{ product.location }}</td>
-              <td class="kebab-menu-td">
-                <ion-button fill="clear" shape="round" expand="block" (click)="openModal(i, h, product)">
-                  <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
-                </ion-button>
+              <td class="table-cell">{{ item.name }}</td>
+              <td class="table-cell">{{ item.price }}</td>
+              <td class="table-cell">{{ item.size }}</td>
+              <td class="table-cell">{{ item.sku }}</td>
+              <td class="table-cell">{{ item.datePurchased }}</td>
+              <td class="table-cell">{{ item.dateSold }}</td>
+              <td class="table-cell">{{ item.location }}</td>
+              <td class="action-menu-td">
+                <ion-fab #fab style="position: relative;">
+                  <ion-fab-button size="small">
+                    <ion-icon name="add"></ion-icon>
+                  </ion-fab-button>
+                  <ion-fab-list side="start">
+                    <ion-fab-button>
+                      <ion-icon name="globe"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: j }, item)">
+                      <ion-icon name="trash"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button (click)="openModal({ firstIndex: i, slicedIndex: j, item: item, role: 'Edit' })">
+                      <ion-icon name="pencil"></ion-icon>
+                    </ion-fab-button>
+                  </ion-fab-list>
+                </ion-fab>
               </td>
             </tr>
           }

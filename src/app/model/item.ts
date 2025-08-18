@@ -1,11 +1,11 @@
 export interface Item {
   id?: number;
-  name?: string;
-  price?: number;
-  size?: string;
-  sku?: string;
-  datePurchased?: string;
-  dateSold?: string | null;
+  name: string;
+  price: number;
+  size: string;
+  sku: string;
+  datePurchased?: any;
+  dateSold?: any;
   location?: string;
 }
 

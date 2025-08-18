@@ -2,11 +2,37 @@ th {
   text-align: left;
 }
 
-.table-cell {
-  padding: 0.5rem 1rem
+ion-grid {
+  margin-left: 1rem;
 }
 
-.kebab-menu-td {
+table {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  border-collapse: separate;
+  background-color: #FFFF;
+  font-weight: 500;
+}
+
+tr:hover {
+  box-shadow: 5px 0 10px grey;
+}
+
+.table-cell {
+  padding: 0.5rem 1rem;
+}
+
+.item-name {
+  color: #FFB454;
+}
+
+.item-sku {
+  color: #59C2FF;
+}
+
+.action-menu-td {
   padding: 1rem 1rem;
 }
 
@@ -19,14 +45,44 @@ th {
 }
 
 .accordion-last-item {
-  box-shadow: 10px 5px 5px grey;
+  box-shadow: 0 5px 5px -5px #27323C;
+}
+
+.filter-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-bottom: 2rem;
+}
+
+.badge-container {
+  padding-left: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+ion-badge {
+  margin-right: 0.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
+  table {
+    border: none;
+    background-color: hsl(209, 21%, 19%); // rgb(39, 50, 60)
+  }
+  tr:hover {
+    box-shadow: none;
+    background-color: hsl(208, 31%, 23%); // rgb(41, 60, 77) menu color in light mode
+  }
   .accordion {
-    background-color: hsl(211 20 16);
+    background-color: hsl(211 20 16); // rgb(33,41,49
   }
   .accordion-last-item {
     box-shadow: none;
+  }
+  .filter-box {
+    background-color: hsl(211 20 16);
+    border: none;
   }
 }
