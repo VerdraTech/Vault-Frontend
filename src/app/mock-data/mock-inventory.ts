@@ -13,7 +13,7 @@ export default [
     "id": 51,
     "name": "Retro Labubu",
     "price": 127.49,
-    "size": "N/A",
+    "size": "M",
     "sku": "5c91f46b-35e5-47d3-a550-b02a13cb7ed9",
     "datePurchased": "2024-09-09",
     "dateSold": "2025-01-14",

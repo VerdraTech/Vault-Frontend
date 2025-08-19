@@ -40,11 +40,24 @@
     <ion-row></ion-row>
   </ion-grid>
     <div class="badge-container">
-        <ion-badge>{{ this.filterForm.controls['size'].value }}</ion-badge>
-     
-        <ion-badge>{{ this.filterForm.controls['location'].value }}</ion-badge>
-      
-        <ion-badge>{{ this.filterForm.controls['listed'].value }}</ion-badge>
+      @if (filterForm.controls['size'].value) {
+        <ion-chip (click)="removeFilter('size')">
+          {{ this.filterForm.controls['size'].value }}
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-chip>
+      }
+      @if (filterForm.controls['location'].value) {
+        <ion-chip (click)="removeFilter('location')">
+          {{ this.filterForm.controls['location'].value }}
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-chip>
+      }
+      @if (filterForm.controls['listed'].value) {
+        <ion-chip (click)="removeFilter('listed')">
+          {{ this.filterForm.controls['listed'].value }}
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-chip>
+      }
       </div>
   </div>
   
@@ -62,7 +75,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (itemsArray of queriedInventory; track $index; let i = $index) {
+      @for (itemsArray of filteredInventory; track $index; let i = $index) {
         <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
           <td class="table-cell">
             @if (expanded[i] && itemsArray.length > 1) {

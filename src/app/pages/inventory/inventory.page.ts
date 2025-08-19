@@ -6,6 +6,7 @@ import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import type { OverlayEventDetail } from '@ionic/core';
+import { merge } from 'rxjs';
 
 enum ModalMode {
   ADD = 'add',
@@ -26,6 +27,11 @@ type AddModalParams = {
   role: 'Add'
 }
 
+type Filters = {
+  key: string,
+  value: string
+}
+
 type ModalParams = EditModalParams | AddModalParams;
 
 @Component({
@@ -42,7 +48,6 @@ export class InventoryPage implements OnInit {
   expanded: boolean[] = [];
   searchForm = new FormControl('');
   filteredInventory: Items[] = [];
-  queriedInventory: Items[] = [];
   filterForm = this.formBuilder.group({
     size: [''],
     listed: [''],
@@ -60,6 +65,7 @@ export class InventoryPage implements OnInit {
     }
   ]
   sizeOptions = [
+    'N/A',
     '7W',
     '8W',
     '9W',
@@ -84,10 +90,13 @@ export class InventoryPage implements OnInit {
 
   ngOnInit() {
     this.items = this.inventoryService.getInventory();
-    this.queriedInventory = this.items;
+    this.filteredInventory = this.items;
     this.expanded = new Array(this.items.length).fill(false);
-    this.searchForm.valueChanges.subscribe(() => {
-      this.applySearch();
+    merge(
+      this.filterForm.valueChanges,
+      this.searchForm.valueChanges
+    ).subscribe(() => {
+      this.applyFilterAndSearch();
     })
   }
 
@@ -162,16 +171,54 @@ export class InventoryPage implements OnInit {
     }
   }
 
-  applySearch() {
-    this.queriedInventory = [];
-    let queryValue = this.searchForm.value;
+  applySearch(queryValue: string | null, items: any) {
+    let matchingResults: Item[] = [];
+
+    items.forEach((item:any) => {
+      const matchesSearch = item.name.toLowerCase().includes(queryValue?.toLowerCase() || '');
+      if (matchesSearch) {
+        matchingResults.push(item)
+      }
+    });
+  
+    if (matchingResults.length === 0) {
+      return []
+    }
+    return matchingResults;
+  }
+
+  applyFilter(selectedFilters: Filters[]) {
+    let filterResults: Item[] = [];
+
     this.items.forEach(itemArray => {
-      itemArray.filter(item => {
-        const matchesSearch = item.name.toLowerCase().includes(queryValue?.toLowerCase() || '');
-        if (matchesSearch) {
-          this.queriedInventory.push([item])
+       itemArray.filter(item => {
+        const matchesFilters = selectedFilters.every((obj) => {
+          if (item[obj.key] === obj.value) {
+            return true
+          }
+          return false
+        })
+        if (matchesFilters) {
+          filterResults.push(item)
         }
-      });
-    })
+       })
+     })
+     return filterResults;
+  }
+
+  applyFilterAndSearch() {
+    const queryValue = this.searchForm.getRawValue()
+    const filterValues = this.filterForm.getRawValue()
+    const selectedFilters = Object.entries(filterValues)
+      .filter(([_, value]) => value !== null && value !== undefined && value !== '')
+      .map(([key, value]) => ({ key, value }))
+
+    const filteredItems = this.applyFilter(selectedFilters as [{ key: string, value: string }])
+    const result = this.applySearch(queryValue, filteredItems)
+    this.filteredInventory = this.inventoryService.groupBySku(result)
+  }
+
+  removeFilter(filterOption: string) {
+    this.filterForm.get(filterOption)?.reset('')
   }
 }

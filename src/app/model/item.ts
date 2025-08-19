@@ -1,4 +1,5 @@
 export interface Item {
+  [key: string | number]: any;
   id?: number;
   name: string;
   price: number;

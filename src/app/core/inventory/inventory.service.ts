@@ -15,6 +15,9 @@ export class InventoryService {
   }
 
   groupBySku(inventory: any) {
+    if (inventory.length === 0) {
+      return []
+    }
     let allItems: Items[] = [];
     let sameItems: Item[] = [];
 
@@ -35,10 +38,14 @@ export class InventoryService {
       }
 
       if (i === inventory.length - 1) {
-        allItems.push(sameItems)
+        allItems.push(Object.assign([],sameItems))
+        sameItems.length = 0;
       }
     }
-
+    // edge case for when there's only one item
+    if (sameItems.length === 1) {
+      allItems.push(Object.assign([], sameItems))
+    }
     return allItems;
   }
 }
