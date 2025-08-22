@@ -83,6 +83,8 @@ export class InventoryPage implements OnInit {
     'XXL'
   ]
 
+  inventoryCount!: number;
+
   constructor(
     private modalController: ModalController,
     private alertController: AlertController
@@ -98,6 +100,7 @@ export class InventoryPage implements OnInit {
     ).subscribe(() => {
       this.applyFilterAndSearch();
     })
+    this.updateItemCount()
   }
 
   toggleAccordion(index: number) {
@@ -145,6 +148,14 @@ export class InventoryPage implements OnInit {
         this.items[this.items.length - 1].push({...data})
       }
     }
+    this.updateItemCount();
+  }
+
+  cloneItem(index: number, item: Item ) {
+    this.items[index].push(item);
+    if (!this.expanded[index]) this.toggleAccordion(index)
+
+    this.updateItemCount();
   }
 
   updateItem(firstIndex: number, slicedIndex: number | null, data: Item) {
@@ -169,6 +180,11 @@ export class InventoryPage implements OnInit {
       this.items[firstIndex][secondIndex] = { ...data };
       this.items[firstIndex].splice(secondIndex, 1);
     }
+    this.updateItemCount();
+  }
+
+  updateItemCount() {
+    this.inventoryCount = this.items.flat(Infinity).length;
   }
 
   applySearch(queryValue: string | null, items: any) {

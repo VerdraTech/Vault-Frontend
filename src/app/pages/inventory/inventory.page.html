@@ -61,7 +61,7 @@
       </div>
   </div>
   
-  <table >
+  <table>
     <thead>
       <tr>
         <th style="width: 17.5%" class="table-cell">Name</th>
@@ -84,6 +84,9 @@
               <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
             }
             {{ itemsArray[0].name }}
+            @if (itemsArray.length > 1) {
+              <ion-chip>{{ itemsArray.length }}</ion-chip>
+            }
           </td>
           <td class="table-cell" >
             <div >{{ itemsArray[0].price }}</div>
@@ -104,13 +107,13 @@
             <div >{{ itemsArray[0].location }}</div>
           </td>
           <td class="action-menu-td">
-            <ion-fab #fab style="position: relative;">
+            <ion-fab style="position: relative;">
               <ion-fab-button size="small">
                 <ion-icon name="add"></ion-icon>
               </ion-fab-button>
               <ion-fab-list side="start">
-                <ion-fab-button>
-                  <ion-icon name="globe"></ion-icon>
+                <ion-fab-button (click)="cloneItem(i, itemsArray[0])">
+                  <ion-icon name="duplicate"></ion-icon>
                 </ion-fab-button>
                 <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: null }, itemsArray[0])">
                   <ion-icon name="trash"></ion-icon>
@@ -125,7 +128,7 @@
         </tr>
         @if (itemsArray.length > 1 && expanded[i]) {
           @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
-            <tr class="accordion" [ngClass]="{'accordion-last-item': last}">
+            <tr class="accordion" [ngClass]="{ 'accordion-last-item': last }">
               <td class="table-cell">{{ item.name }}</td>
               <td class="table-cell">{{ item.price }}</td>
               <td class="table-cell">{{ item.size }}</td>
@@ -134,13 +137,13 @@
               <td class="table-cell">{{ item.dateSold }}</td>
               <td class="table-cell">{{ item.location }}</td>
               <td class="action-menu-td">
-                <ion-fab #fab style="position: relative;">
+                <ion-fab style="position: relative;">
                   <ion-fab-button size="small">
                     <ion-icon name="add"></ion-icon>
                   </ion-fab-button>
                   <ion-fab-list side="start">
-                    <ion-fab-button>
-                      <ion-icon name="globe"></ion-icon>
+                    <ion-fab-button (click)="cloneItem(i, item)">
+                      <ion-icon name="duplicate"></ion-icon>
                     </ion-fab-button>
                     <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: j }, item)">
                       <ion-icon name="trash"></ion-icon>
@@ -158,6 +161,11 @@
         <p>There are no items</p>
       }
     </tbody>
+    <tfoot>
+      <tr>
+        <th class="table-cell">Count: {{ inventoryCount }}</th>
+      </tr>
+    </tfoot>
   </table>
 </ion-content>
 
