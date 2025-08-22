@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'inventory',
     loadComponent: () => import('./pages/inventory/inventory.page').then( m => m.InventoryPage)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile.page').then( m => m.ProfilePage)
   }
 ];
 
