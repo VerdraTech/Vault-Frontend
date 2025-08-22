@@ -6,7 +6,7 @@ import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import type { OverlayEventDetail } from '@ionic/core';
-import { merge } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 
 enum ModalMode {
   ADD = 'add',
@@ -45,9 +45,11 @@ export class InventoryPage implements OnInit {
   private inventoryService = inject(InventoryService)
   private formBuilder = inject(FormBuilder)
   items: Items[] = [];
+  items$!: Observable<Items[]>;
   expanded: boolean[] = [];
   searchForm = new FormControl('');
   filteredInventory: Items[] = [];
+  filteredInventory$!: Observable<Items[]>;
   filterForm = this.formBuilder.group({
     size: [''],
     listed: [''],
@@ -91,8 +93,11 @@ export class InventoryPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.items = this.inventoryService.getInventory();
-    this.filteredInventory = this.items;
+    // this.items = this.inventoryService.getInventory();
+    this.items$ = this.inventoryService.getInventory()
+    console.log(this.items$)
+    //this.filteredInventory = this.items;
+    this.filteredInventory$ = this.items$;
     this.expanded = new Array(this.items.length).fill(false);
     merge(
       this.filterForm.valueChanges,
@@ -129,7 +134,7 @@ export class InventoryPage implements OnInit {
   async presentAlert(data: any, item: Item) {
     const alert = await this.alertController.create({
       header: 'Delete Item',
-      message: `Are you sure you want to delete ${item.name}? This action is irreversible.`,
+      message: `Are you sure you want to delete ${item['name']}? This action is irreversible.`,
       buttons: this.alertButtons,
     });
     alert.present();
