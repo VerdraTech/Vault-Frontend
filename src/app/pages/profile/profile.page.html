@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding" [formGroup]="profileForm">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">profile</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid class="profile">
+    <ion-row>
+      <ion-col>
+        <ion-avatar class="profile-picture">
+          <ion-icon name="person-circle"></ion-icon>
+        </ion-avatar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Tier" fill="outline" formControlName="tier"></ion-input> 
+      </ion-col>
+      
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Name" fill="outline" formControlName="name"></ion-input>
+      </ion-col>
+      <ion-col>
+        <ion-input labelPlacement="stacked" label="Email" fill="outline" formControlName="email"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      @if (profileForm.disabled) {
+        <ion-col>
+          <ion-button (click)="editInfo()" shape="round">Edit Information</ion-button>
+        </ion-col>
+      }
+      @if (profileForm.enabled) {
+        <ion-col>
+          <ion-button (click)="cancel()" shape="round">Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="saveInfo()" shape="round">Save</ion-button>
+        </ion-col>
+      }
+      
+    </ion-row>
+  </ion-grid>
+  
+</ion-content>

@@ -4,6 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>{{ folder }}</ion-title>
+    <ion-button slot="end" shape="round" (click)="navigateProfile()">
+      <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -20,8 +23,6 @@
   </div>
 
   @if (folder === "inventory") {
-    <ion-content [fullscreen]="true">
-      <app-inventory></app-inventory>
-    </ion-content>
+    <app-inventory></app-inventory>
   }
 </ion-content>
