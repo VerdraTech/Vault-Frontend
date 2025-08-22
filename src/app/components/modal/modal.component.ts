@@ -51,17 +51,17 @@ export class ModalComponent  implements OnInit {
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    if (this.action === 'Edit') {
-      this.itemForm.patchValue({
-        name: this.itemData['name'],
-        price: this.itemData['price'],
-        size: this.itemData['size'],
-        sku: this.itemData['sku'],
-        datePurchased: this.itemData['datePurchased'],
-        dateSold: this.itemData['dateSold'],
-        location: this.itemData['location'],
-      })
-    }
+    // if (this.action === 'Edit') {
+    //   this.itemForm.patchValue({
+    //     name: this.itemData['name'],
+    //     price: this.itemData['price'],
+    //     size: this.itemData['size'],
+    //     sku: this.itemData['sku'],
+    //     datePurchased: this.itemData['datePurchased'],
+    //     dateSold: this.itemData['dateSold'],
+    //     location: this.itemData['location'],
+    //   })
+    // }
   }
 
   cancel() {

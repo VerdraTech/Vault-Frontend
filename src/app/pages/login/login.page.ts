@@ -18,6 +18,7 @@ export class LoginPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    window.location.href = 'https://localhost:8000/login'
   }
 
   buildForm() {
