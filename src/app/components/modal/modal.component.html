@@ -45,7 +45,7 @@
         <ion-datetime-button datetime="purchaseDate" class="calendar-btn"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="purchaseDate" formControlName="datePurchased" [showDefaultButtons]="true"></ion-datetime>
+            <ion-datetime id="purchaseDate" presentation="date" formControlName="datePurchased" [showDefaultButtons]="true"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-col>
@@ -54,7 +54,7 @@
         <ion-datetime-button datetime="sellDate" class="calendar-btn"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="sellDate" formControlName="dateSold" [showDefaultButtons]="true"></ion-datetime>
+            <ion-datetime id="sellDate" presentation="date" formControlName="dateSold" [showDefaultButtons]="true"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-col>
@@ -70,15 +70,11 @@
   @if (action === 'Add') {
     <ion-grid>
       <ion-row class="ion-align-items-end">
-        <ion-col >
+        <ion-col size="4">
           <ion-checkbox labelPlacement="end" color="medium" (click)="toggleCheckbox()">Bulk Add</ion-checkbox>
         </ion-col>
-        <ion-col >
-          <ion-select interface="popover" labelPlacement="stacked" label="Quantity" placeholder="1" formControlName="quantity" justify="start">
-            <ion-select-option>1</ion-select-option>
-            <ion-select-option>2</ion-select-option>
-            <ion-select-option>3</ion-select-option>
-          </ion-select>
+        <ion-col size="2">
+          <ion-input labelPlacement="stacked" label="Quantity" placeholder="1" formControlName="quantity"></ion-input>
         </ion-col>
       </ion-row>
     </ion-grid>
