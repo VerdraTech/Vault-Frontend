@@ -5,7 +5,9 @@
     </ion-buttons>
     <ion-title>{{ action }} Item</ion-title>
     <ion-buttons slot="end">
-      <ion-button type="submit" (click)="confirm()" [disabled]="itemForm.invalid" [strong]="true">{{ action }}</ion-button>
+      <ion-button (click)="confirm()" [strong]="true">{{
+        action === "Add" ? "Add" : "Save"
+      }}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -13,26 +15,52 @@
   <ion-grid>
     <ion-row>
       <ion-col size="10">
-        <ion-input labelPlacement="stacked" label="Name" placeholder="Air Jordan 1 Retro Low OG Zion Williamson Voodoo" formControlName="name" errorText="Name is required"></ion-input>
+        <ion-input
+          labelPlacement="stacked"
+          label="Name"
+          placeholder="Air Jordan 1 Retro Low OG Zion Williamson Voodoo"
+          formControlName="name"
+          errorText="Name is required"
+        ></ion-input>
       </ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid>
     <ion-row>
       <ion-col size="10">
-        <ion-input labelPlacement="stacked" label="SKU" placeholder="DZ7292-200" formControlName="sku" errorText="SKU is required"></ion-input>
+        <ion-input
+          labelPlacement="stacked"
+          label="SKU"
+          placeholder="DZ7292-200"
+          formControlName="sku"
+          errorText="SKU is required"
+        ></ion-input>
       </ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid>
     <ion-row>
       <ion-col size="2">
-        <ion-input labelPlacement="stacked" label="Price" placeholder="600" formControlName="price" errorText="Price is required"></ion-input>
+        <ion-input
+          labelPlacement="stacked"
+          label="Price"
+          placeholder="600"
+          formControlName="price"
+          errorText="Price is required"
+        ></ion-input>
       </ion-col>
-      <ion-col size=2>
-        <ion-select interface="popover" labelPlacement="stacked" label="Size" placeholder="Select" formControlName="size" justify="start" errorText="Size is required">
+      <ion-col size="2">
+        <ion-select
+          interface="popover"
+          labelPlacement="stacked"
+          label="Size"
+          placeholder="Select"
+          formControlName="size"
+          justify="start"
+          errorText="Size is required"
+        >
           @for (size of sizeOptions; track $index) {
-            <ion-select-option>{{ size }}</ion-select-option>
+          <ion-select-option>{{ size }}</ion-select-option>
           }
         </ion-select>
       </ion-col>
@@ -41,7 +69,14 @@
   <ion-grid>
     <ion-row>
       <ion-col size="4">
-        <ion-select interface="popover" labelPlacement="stacked" label="Condition" placeholder="Select" formControlName="condition" justify="start">
+        <ion-select
+          interface="popover"
+          labelPlacement="stacked"
+          label="Condition"
+          placeholder="Select"
+          formControlName="condition"
+          justify="start"
+        >
           <ion-select-option>NEW</ion-select-option>
           <ion-select-option>USED</ion-select-option>
         </ion-select>
@@ -52,19 +87,35 @@
     <ion-row>
       <ion-col>
         <ion-label>Date Purchased</ion-label>
-        <ion-datetime-button datetime="purchaseDate" class="calendar-btn"></ion-datetime-button>
+        <ion-datetime-button
+          datetime="purchaseDate"
+          class="calendar-btn"
+        ></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="purchaseDate" presentation="date" formControlName="datePurchased" [showDefaultButtons]="true"></ion-datetime>
+            <ion-datetime
+              id="purchaseDate"
+              presentation="date"
+              formControlName="datePurchased"
+              [showDefaultButtons]="true"
+            ></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-col>
       <ion-col>
         <ion-label>Date Sold</ion-label>
-        <ion-datetime-button datetime="sellDate" class="calendar-btn"></ion-datetime-button>
+        <ion-datetime-button
+          datetime="sellDate"
+          class="calendar-btn"
+        ></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="sellDate" presentation="date" formControlName="dateSold" [showDefaultButtons]="true"></ion-datetime>
+            <ion-datetime
+              id="sellDate"
+              presentation="date"
+              formControlName="dateSold"
+              [showDefaultButtons]="true"
+            ></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-col>
@@ -73,20 +124,35 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-input labelPlacement="stacked" label="Location" placeholder="Warehouse A" formControlName="location"></ion-input>
+        <ion-input
+          labelPlacement="stacked"
+          label="Location"
+          placeholder="Warehouse A"
+          formControlName="location"
+        ></ion-input>
       </ion-col>
     </ion-row>
   </ion-grid>
   @if (action === 'Add') {
-    <ion-grid>
-      <ion-row class="ion-align-items-end">
-        <ion-col size="4">
-          <ion-checkbox labelPlacement="end" color="medium" (click)="toggleCheckbox()">Bulk Add</ion-checkbox>
-        </ion-col>
-        <ion-col size="2">
-          <ion-input labelPlacement="stacked" label="Quantity" placeholder="1" formControlName="quantity"></ion-input>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <ion-grid>
+    <ion-row class="ion-align-items-end">
+      <ion-col size="4">
+        <ion-checkbox
+          labelPlacement="end"
+          color="medium"
+          (click)="toggleCheckbox()"
+          >Bulk Add</ion-checkbox
+        >
+      </ion-col>
+      <ion-col size="2">
+        <ion-input
+          labelPlacement="stacked"
+          label="Quantity"
+          placeholder="1"
+          formControlName="quantity"
+        ></ion-input>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   }
 </ion-content>
