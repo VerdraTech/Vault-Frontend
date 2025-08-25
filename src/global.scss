@@ -38,12 +38,27 @@
 
 @media only screen and (min-width: 933px) {
   ion-modal {
-    --border-radius: 20px;
+    --border-radius: 0.5rem;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root.md {
     --ion-background-color: #131721; /* Dark background */
+  }
+}
+
+ion-content {
+  --background: #f5f6fa;
+}
+
+ion-menu {
+  --ion-background-color: hsl(208, 31%, 23%);
+
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: hsl(209, 21%, 19%)
   }
 }
