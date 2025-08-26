@@ -5,6 +5,7 @@ import { Item, Items } from 'src/app/model/item';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import * as Papa from 'papaparse'
 import type { OverlayEventDetail } from '@ionic/core';
 
 enum ModalMode {
@@ -173,5 +174,35 @@ export class InventoryPage implements OnInit {
         }
       });
     })
+  }
+
+  onFileSelected(event: any): Items[] {
+    const file: File = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          const csvImportData = this.mapCsvData(result.data)
+          this.queriedInventory = this.inventoryService.csvImport(csvImportData)
+        }
+      })
+    }
+    return [];
+  }
+
+  mapCsvData(data: any): Items[] {
+    const items = data.map((row: any) => ({
+      id: row?.['ID'],
+      name: row['Item Name'],
+      sku: row?.['SKU'],
+      price: (row['Price'] || row['Cost']),
+      size: row['Size'],
+      location: row?.['Location'],
+      datePurchased: row?.['Purchase Date'],
+      dateSold: row?.['Sold Date'],
+    }));
+
+    return items;
   }
 }

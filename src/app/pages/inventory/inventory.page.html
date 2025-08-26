@@ -9,6 +9,11 @@
         <ion-button fill="solid" shape="round" (click)="openModal({ firstIndex: null, slicedIndex: null, item: null, role: 'Add' })">
           Add Item
         </ion-button>
+        <input 
+          type="file" 
+          accept=".csv"
+          (change)="onFileSelected($event)"
+        >
       </ion-col>
     </ion-row>
   </ion-grid>

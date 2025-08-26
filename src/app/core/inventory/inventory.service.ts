@@ -6,11 +6,11 @@ import mockInventory from 'src/app/mock-data/mock-inventory';
   providedIn: 'root'
 })
 export class InventoryService {
-
+  tempInventory: Items[] = [];
   constructor() { }
 
   getInventory() {
-    let inv = this.groupBySku(mockInventory)
+    let inv = this.groupBySku(this.tempInventory)
     return inv;
   }
 
@@ -40,5 +40,12 @@ export class InventoryService {
     }
 
     return allItems;
+  }
+
+  csvImport(data: any) {
+    data.map((item: Item) => {
+      this.tempInventory.push([{...item}])
+    })
+    return this.tempInventory;
   }
 }
