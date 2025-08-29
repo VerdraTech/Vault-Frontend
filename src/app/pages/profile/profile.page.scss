@@ -11,3 +11,9 @@ ion-icon {
   height: 100%;
   width: 100%;
 }
+
+@media (prefers-color-scheme: dark) {
+  .profile {
+    background-color: hsl(211 20 16); // rgb(33,41,49
+  }
+}
