@@ -1,0 +1,19 @@
+.profile {
+  background-color: white;
+}
+
+.profile-picture {
+  height: 10rem;
+  width: 10rem;
+}
+
+ion-icon {
+  height: 100%;
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile {
+    background-color: hsl(211 20 16); // rgb(33,41,49
+  }
+}
