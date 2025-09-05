@@ -19,18 +19,20 @@ export class ModalComponent  implements OnInit {
   addSingleItem = true;
 
   itemForm = this.formBuilder.group({
-    name: ['', Validators.required],
-    price: [0.00, Validators.required],
+    name: [{ value: '', disabled: false }],
+    price: [null as null | number, Validators.required],
     size: ['', Validators.required],
-    sku: ['', Validators.required],
-    datePurchased: [null],
-    dateSold: [null],
+    sku: [{ value: '', disabled: false }, Validators.required],
+    datePurchased: [null as null | string],
+    dateSold: [null as null | string],
     location: [''],
-    quantity: [{ value: 1, disabled: true }]
+    quantity: [{ value: 1, disabled: true }],
+    condition: ['', Validators.required]
   })
 
   sizeOptions = [
     'N/A',
+    '8',
     '7W',
     '8W',
     '9W',
@@ -51,17 +53,20 @@ export class ModalComponent  implements OnInit {
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    // if (this.action === 'Edit') {
-    //   this.itemForm.patchValue({
-    //     name: this.itemData['name'],
-    //     price: this.itemData['price'],
-    //     size: this.itemData['size'],
-    //     sku: this.itemData['sku'],
-    //     datePurchased: this.itemData['datePurchased'],
-    //     dateSold: this.itemData['dateSold'],
-    //     location: this.itemData['location'],
-    //   })
-    // }
+    if (this.action === 'Edit') {
+      this.itemForm.patchValue({
+        name: this.itemData.item['name'],
+        price: this.itemData['acquisitionCost'],
+        size: this.itemData['size'],
+        sku: this.itemData.item['sku'],
+        datePurchased: this.itemData.item['purchaseDate'],
+        dateSold: this.itemData.item['sellDate'],
+        location: this.itemData['location'],
+        condition: this.itemData['condition']
+      })
+      this.itemForm.controls['name'].disable()
+      this.itemForm.controls['sku'].disable()
+    }
   }
 
   cancel() {
@@ -69,7 +74,12 @@ export class ModalComponent  implements OnInit {
   }
 
   confirm() {
-    return this.modalController.dismiss(this.itemForm.getRawValue(), this.action)
+    if (this.itemForm.valid && this.itemForm.dirty) {
+      return this.modalController.dismiss(this.itemForm.getRawValue(), this.action)
+    } else if (this.itemForm.pristine) {
+      return this.modalController.dismiss(null, 'Cancel')
+    }
+    return this.modalController.dismiss(null, 'Cancel')
   }
 
   toggleCheckbox() {

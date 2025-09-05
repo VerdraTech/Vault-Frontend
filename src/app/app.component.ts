@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from './core/auth/auth.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   private authService = inject(AuthService);
+  private http = inject(HttpClient);
   loggedIn = true;
   
   constructor(
@@ -28,22 +30,10 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.authService.startSupabase();
-   
-    // this.authService.loggedIn$.subscribe(loggedIn => {
-    //   if (loggedIn) {
-    //     this.loggedIn = true;
-    //     this.router.navigate(['/folder/inbox'])
-    //     //
-    //   } else {
-    //     this.router.navigate(['/login'])
-    //   }
-    // })
+    console.log('Start App')
+     this.http.get<any>('https://localhost:8000/auth/me', { withCredentials: true }).subscribe((response) => {
+      console.log(response.id)
+      this.authService.setUser(response.id)
+    })
   }
-
-  // signOut() {
-  //   this.authService.signOut();
-  //   this.loggedIn = false;
-  //   this.router.navigate(['/login'])
-  // }
 }
