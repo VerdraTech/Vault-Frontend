@@ -13,6 +13,8 @@ export class AuthService {
   _loggedIn = new BehaviorSubject<boolean>(false);
   loggedIn$ = this._loggedIn.asObservable()
 
+  currentUser = '';
+
   constructor() { }
 
   startSupabase() {
@@ -56,5 +58,7 @@ export class AuthService {
     return this.supabase.auth.signOut()
   }
 
-
+  setUser(userId: string) {
+    this.currentUser = userId;
+  }
 }

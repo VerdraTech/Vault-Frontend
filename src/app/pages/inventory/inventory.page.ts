@@ -5,7 +5,6 @@ import { Item, Items } from 'src/app/model/item';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import type { OverlayEventDetail } from '@ionic/core';
 import { merge, Observable } from 'rxjs';
 
 enum ModalMode {
@@ -14,15 +13,11 @@ enum ModalMode {
 }
 
 type EditModalParams = {
-  firstIndex: number,
-  slicedIndex: number | null,
   item: Item,
   role: 'Edit',
 }
 
 type AddModalParams = {
-  firstIndex: null,
-  slicedIndex: null,
   item: null,
   role: 'Add'
 }
@@ -68,6 +63,7 @@ export class InventoryPage implements OnInit {
   ]
   sizeOptions = [
     'N/A',
+    '8',
     '7W',
     '8W',
     '9W',
@@ -93,10 +89,7 @@ export class InventoryPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.items = this.inventoryService.getInventory();
-    this.items$ = this.inventoryService.getInventory()
-    console.log(this.items$)
-    //this.filteredInventory = this.items;
+    this.items$ = this.inventoryService.getUserInventory()
     this.filteredInventory$ = this.items$;
     this.expanded = new Array(this.items.length).fill(false);
     merge(
@@ -105,14 +98,14 @@ export class InventoryPage implements OnInit {
     ).subscribe(() => {
       this.applyFilterAndSearch();
     })
-    this.updateItemCount()
+    //this.updateItemCount()
   }
 
   toggleAccordion(index: number) {
     this.expanded[index] = !this.expanded[index];
   }
 
-  async openModal(params: ModalParams) {
+  async openModal(params: any) {
     const modal = await this.modalController.create({
       component: ModalComponent,
       componentProps: {
@@ -123,15 +116,15 @@ export class InventoryPage implements OnInit {
     modal.present()
 
     const { data, role } = await modal.onWillDismiss();
-
-    if (role === 'Edit' && params.firstIndex !== null) {
-      this.updateItem(params.firstIndex, params.slicedIndex, data)
+    data.acquisitionCost = Number(data.price)
+    if (role === 'Edit') {
+      this.updateItem(data, params.item['id'])
     } else if (role === 'Add') {
       this.addItem(data.quantity, data)
     }
   }
 
-  async presentAlert(data: any, item: Item) {
+  async presentAlert(item: Item) {
     const alert = await this.alertController.create({
       header: 'Delete Item',
       message: `Are you sure you want to delete ${item['name']}? This action is irreversible.`,
@@ -142,55 +135,25 @@ export class InventoryPage implements OnInit {
     const { role } = await alert.onWillDismiss();
 
     if (role === 'confirm') {
-      this.deleteItem(data.firstIndex, data.slicedIndex, item);
+      this.deleteItem(item.id)
     }
-  }
-
-  addItem(quantity: number, data: Item) {
-    this.items.push([{...data}])
-    if (quantity > 1) {
-      for (let i = 0; i < quantity - 1; i++) {
-        this.items[this.items.length - 1].push({...data})
-      }
-    }
-    this.updateItemCount();
   }
 
   cloneItem(index: number, item: Item ) {
     this.items[index].push(item);
     if (!this.expanded[index]) this.toggleAccordion(index)
 
-    this.updateItemCount();
+    //this.updateItemCount();
   }
 
-  updateItem(firstIndex: number, slicedIndex: number | null, data: Item) {
-    if (slicedIndex === null) {
-      // update first item of the accordion
-      this.items[firstIndex][0] = { ...data };
-    } else {
-      const secondIndex = slicedIndex + 1
-      this.items[firstIndex][secondIndex] = { ...data };
-    }
+  addItem(quantity: number, data: any) {
+    data
+    this.inventoryService.addItem(quantity, data);
   }
 
-  deleteItem(firstIndex: number, slicedIndex: number | null, data: Item) {
-    if (slicedIndex === null) {
-      // delete first item of the accordion
-      this.items[firstIndex].splice(0, 1);
-      if (this.items[firstIndex].length === 0) {
-        this.items.splice(firstIndex, 1)
-      }
-    } else {
-      const secondIndex = slicedIndex + 1
-      this.items[firstIndex][secondIndex] = { ...data };
-      this.items[firstIndex].splice(secondIndex, 1);
-    }
-    this.updateItemCount();
-  }
-
-  updateItemCount() {
-    this.inventoryCount = this.items.flat(Infinity).length;
-  }
+  //updateItemCount() {
+  //  this.inventoryCount = this.items.flat(Infinity).length;
+  //}
 
   applySearch(queryValue: string | null, items: any) {
     let matchingResults: Item[] = [];
@@ -241,5 +204,13 @@ export class InventoryPage implements OnInit {
 
   removeFilter(filterOption: string) {
     this.filterForm.get(filterOption)?.reset('')
+  }
+
+  deleteItem(id: any) {
+    this.inventoryService.deleteItem(id);
+  }
+
+  updateItem(data: any, id: string) {
+    this.inventoryService.updateItem(data, id)
   }
 }
