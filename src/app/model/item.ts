@@ -23,5 +23,5 @@ export interface Item {
 }
 
 export interface Items extends Array<Item> {
-  
+
 }
