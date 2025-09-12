@@ -5,7 +5,7 @@ import { Item, Items } from 'src/app/model/item';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { merge, Observable } from 'rxjs';
+import { map, merge, Observable } from 'rxjs';
 
 enum ModalMode {
   ADD = 'add',
@@ -39,13 +39,12 @@ type ModalParams = EditModalParams | AddModalParams;
 export class InventoryPage implements OnInit {
   private inventoryService = inject(InventoryService)
   private formBuilder = inject(FormBuilder)
-  items: Items[] = [];
-  items$!: Observable<Items[]>;
+  items = [];
+  items$!: Observable<{ items: Items[], total: number }>;
   expanded: boolean[] = [];
-  searchForm = new FormControl('');
-  filteredInventory: Items[] = [];
   filteredInventory$!: Observable<Items[]>;
   filterForm = this.formBuilder.group({
+    itemName: [''],
     size: [''],
     listed: [''],
     location: ['']
@@ -90,15 +89,17 @@ export class InventoryPage implements OnInit {
 
   ngOnInit() {
     this.items$ = this.inventoryService.getUserInventory()
-    this.filteredInventory$ = this.items$;
+    this.filteredInventory$ = this.items$.pipe(
+      map((response: any) => {
+        this.inventoryCount = response.total
+        return response.items
+      }
+    ));
     this.expanded = new Array(this.items.length).fill(false);
-    merge(
-      this.filterForm.valueChanges,
-      this.searchForm.valueChanges
-    ).subscribe(() => {
+   
+    this.filterForm.valueChanges.subscribe(() => {
       this.applyFilterAndSearch();
     })
-    //this.updateItemCount()
   }
 
   toggleAccordion(index: number) {
@@ -139,67 +140,14 @@ export class InventoryPage implements OnInit {
     }
   }
 
-  cloneItem(index: number, item: Item ) {
-    this.items[index].push(item);
-    if (!this.expanded[index]) this.toggleAccordion(index)
-
-    //this.updateItemCount();
-  }
+  // cloneItem(index: number, item: Item ) {
+  //   this.items[index].push(item);
+  //   if (!this.expanded[index]) this.toggleAccordion(index)
+  // }
 
   addItem(quantity: number, data: any) {
     data
     this.inventoryService.addItem(quantity, data);
-  }
-
-  //updateItemCount() {
-  //  this.inventoryCount = this.items.flat(Infinity).length;
-  //}
-
-  applySearch(queryValue: string | null, items: any) {
-    let matchingResults: Item[] = [];
-
-    items.forEach((item:any) => {
-      const matchesSearch = item.name.toLowerCase().includes(queryValue?.toLowerCase() || '');
-      if (matchesSearch) {
-        matchingResults.push(item)
-      }
-    });
-  
-    if (matchingResults.length === 0) {
-      return []
-    }
-    return matchingResults;
-  }
-
-  applyFilter(selectedFilters: Filters[]) {
-    let filterResults: Item[] = [];
-
-    this.items.forEach(itemArray => {
-       itemArray.filter(item => {
-        const matchesFilters = selectedFilters.every((obj) => {
-          if (item[obj.key] === obj.value) {
-            return true
-          }
-          return false
-        })
-        if (matchesFilters) {
-          filterResults.push(item)
-        }
-       })
-     })
-     return filterResults;
-  }
-
-  applyFilterAndSearch() {
-    const queryValue = this.searchForm.getRawValue()
-    const filterValues = this.filterForm.getRawValue()
-    const selectedFilters = Object.entries(filterValues)
-      .filter(([_, value]) => value !== null && value !== undefined && value !== '')
-      .map(([key, value]) => ({ key, value }))
-
-    const filteredItems = this.applyFilter(selectedFilters as [{ key: string, value: string }])
-    const result = this.applySearch(queryValue, filteredItems)
-    this.filteredInventory = this.inventoryService.groupBySku(result)
   }
 
   removeFilter(filterOption: string) {
@@ -212,5 +160,15 @@ export class InventoryPage implements OnInit {
 
   updateItem(data: any, id: string) {
     this.inventoryService.updateItem(data, id)
+  }
+
+  applyFilterAndSearch() {
+    const filterValues = this.filterForm.getRawValue()
+    this.filteredInventory$ = this.inventoryService.getFilteredUserInventory(filterValues).pipe(
+      map((response: any) => {
+        this.inventoryCount = response.total
+        return response.items
+      }
+    ));
   }
 }

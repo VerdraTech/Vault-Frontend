@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Item, Items } from 'src/app/model/item';
 import mockInventory from 'src/app/mock-data/mock-inventory';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
@@ -15,11 +15,33 @@ export class InventoryService {
 
   constructor() { }
 
-  getUserInventory(): Observable<Items[]> {
+  getUserInventory(): Observable<{ items: Items[], total: number }> {
     return this.http.get<any>(`${this.inventoryURL}/user/${this.authService.currentUser}?page=1&size=100`, { withCredentials: true }).pipe(
       map((response) => {
-        let items =  this.groupBySku(response.items)
-        return items;
+        let items = this.groupBySku(response.items)
+        return { items: items, total: response.total };
+      })
+    )
+  }
+
+  getFilteredUserInventory(filters: {}, page = 1, size = 25): Observable<{ items: Items[], total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        const snakeCaseKey = this.filterMapper(key)
+        params = params.set(snakeCaseKey, value.toString());
+      }
+    })
+    return this.http.get<any>(`${this.inventoryURL}/user/${this.authService.currentUser}`, {
+      params, 
+      withCredentials: true
+    }).pipe(
+      map((response) => {
+        let items = this.groupBySku(response)
+        return { items: items, total: response.total }
       })
     )
   }
@@ -62,7 +84,7 @@ export class InventoryService {
     });
     return this.http.post<any>(this.inventoryURL, {
       user_id: this.authService.currentUser,
-      item_id: 'fd993584-e7b5-4242-8b32-fea0e20bf50a', // update after SKU change
+      item_id: 'f1a4b893-0984-429d-aa3f-73827fe2de87', // update after SKU change
       size: data.size,
       condition: data.condition,
       acquisition_cost: data.acquisitionCost,
@@ -73,30 +95,30 @@ export class InventoryService {
     })
   }
 
-  groupBySku(inventory: any) {
-    if (inventory.length === 0) {
+  groupBySku(data: any) {
+    if (data.length === 0) {
       return []
     }
     let allItems: Items[] = [];
     let sameItems: Item[] = [];
 
     // data received from db should be sorted
-    for (let i = 0; i < inventory.length; i++) {
-      let item = inventory[i]
+    for (let i = 0; i < data.length; i++) {
+      let item = data[i]
       if (sameItems.length === 0) {
-        sameItems.push(this.dataMapper(item))
+        sameItems.push(this.itemMapper(item))
         continue;
       }
 
       if (sameItems[0]['item']['sku'] === item['item']['sku']) {
-        sameItems.push(this.dataMapper(item))
+        sameItems.push(this.itemMapper(item))
       } else {
         allItems.push(Object.assign([], sameItems))
         sameItems.length = 0;
-        sameItems.push(this.dataMapper(item))
+        sameItems.push(this.itemMapper(item))
       }
 
-      if (i === inventory.length - 1) {
+      if (i === data.length - 1) {
         allItems.push(Object.assign([],sameItems))
         sameItems.length = 0;
       }
@@ -108,7 +130,7 @@ export class InventoryService {
     return allItems;
   }
 
-  dataMapper(data: any): Item {
+  itemMapper(data: any): Item {
     return {
       id: data.id,
       condition: data.condition,
@@ -130,6 +152,17 @@ export class InventoryService {
       quantity: data.quantity,
       size: data.size,
       userId: data.user_id,
+    }
+  }
+
+  filterMapper(key: any) {
+    switch (key) {
+      case 'size':
+        return 'size_filter'
+      case 'itemName':
+        return 'item_name'
+      default:
+        return key
     }
   }
 }
