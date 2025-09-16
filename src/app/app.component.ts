@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from './core/auth/auth.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { EnvResolverService } from './core/env-resolver/env-resolver.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
 
   private authService = inject(AuthService);
   private http = inject(HttpClient);
+  private envService = inject(EnvResolverService)
   loggedIn = true;
   
   constructor(
@@ -32,7 +34,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     console.log('Start App')
-     this.http.get<any>('https://localhost:8000/auth/me', { withCredentials: true }).subscribe((response) => {
+    console.log(this.envService.apiUrl)
+     this.http.get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true }).subscribe((response) => {
       console.log(response.id)
       this.authService.setUser(response.id)
     })

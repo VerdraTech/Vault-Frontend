@@ -4,15 +4,17 @@ import mockInventory from 'src/app/mock-data/mock-inventory';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { EnvResolverService } from '../env-resolver/env-resolver.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
   private http = inject(HttpClient);
-  private authService = inject(AuthService)
-  inventoryURL = 'https://localhost:8000/api/inventory'
-
+  private authService = inject(AuthService);
+  private envService = inject(EnvResolverService);
+  apiURL = this.envService.apiUrl;
+  inventoryURL = `${this.apiURL}/api/inventory`
   constructor() { }
 
   getUserInventory(): Observable<{ items: Items[], total: number }> {
@@ -47,11 +49,15 @@ export class InventoryService {
   }
 
   getAllInventory() {
+    return this.http.get<any>(`${this.apiURL}/all?page=1&size=100`,
+      { withCredentials: true }
+    )
+  }
+
+  getAllProd() {
     return this.http.get<any>(`${this.inventoryURL}/all`,
       { withCredentials: true }
-    ).subscribe((response) => {
-      console.log(response)
-    })
+    )
   }
 
   updateItem(data: any, id: string) { // modify item
