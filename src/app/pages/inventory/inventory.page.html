@@ -1,19 +1,19 @@
 
-<ion-content [fullscreen]="true" [scrollX]="true">
+<ion-content [fullscreen]="true" [scrollX]="true" [formGroup]="filterForm">
   <ion-grid>
     <ion-row class="ion-align-items-center">
       <ion-col>
-        <ion-searchbar placeholder="Search Items" show-clear-button="focus" [debounce]="1000" [formControl]="searchForm"></ion-searchbar>
+        <ion-searchbar placeholder="Search Items" show-clear-button="focus" [debounce]="1000" formControlName="itemName"></ion-searchbar>
       </ion-col>
       <ion-col>
-        <ion-button fill="solid" shape="round" (click)="openModal({ firstIndex: null, slicedIndex: null, item: null, role: 'Add' })">
+        <ion-button fill="solid" shape="round" (click)="openModal({ item: null, role: 'Add' })">
           Add Item
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
   <div class="filter-box">
-  <ion-grid [formGroup]="filterForm">
+  <ion-grid>
     <ion-row>
       <ion-col>
         <ion-select labelPlacement="stacked" label="Size" fill="outline" placeholder="Select" interface="popover" formControlName="size">
@@ -39,7 +39,7 @@
     </ion-row>
     <ion-row></ion-row>
   </ion-grid>
-    <div class="badge-container">
+    <div class="chip-container">
       @if (filterForm.controls['size'].value) {
         <ion-chip (click)="removeFilter('size')">
           {{ this.filterForm.controls['size'].value }}
@@ -61,111 +61,176 @@
       </div>
   </div>
   
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 17.5%" class="table-cell">Name</th>
-        <th style="width: 10%" class="table-cell">Price</th>
-        <th style="width: 12.5%" class="table-cell">Size</th>
-        <th style="width: 12.5%" class="table-cell">SKU</th>
-        <th style="width: 12.5%" class="table-cell">Date Purchased</th>
-        <th style="width: 12.5%" class="table-cell">Date Sold</th>
-        <th style="width: 12.5%" class="table-cell">Location</th>
-        <th style="width: 10%" class="table-cell">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (itemsArray of filteredInventory; track $index; let i = $index) {
-        <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
-          <td class="table-cell">
-            @if (expanded[i] && itemsArray.length > 1) {
-              <ion-icon name="chevron-down" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
-            } @else if (!expanded[i] && itemsArray.length > 1) {
-              <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
-            }
-            {{ itemsArray[0].name }}
-            @if (itemsArray.length > 1) {
-              <ion-chip>{{ itemsArray.length }}</ion-chip>
-            }
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].price }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].size }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].sku }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].datePurchased }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].dateSold }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].location }}</div>
-          </td>
-          <td class="action-menu-td">
-            <ion-fab style="position: relative;">
-              <ion-fab-button size="small">
-                <ion-icon name="add"></ion-icon>
-              </ion-fab-button>
-              <ion-fab-list side="start">
-                <ion-fab-button (click)="cloneItem(i, itemsArray[0])">
-                  <ion-icon name="duplicate"></ion-icon>
-                </ion-fab-button>
-                <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: null }, itemsArray[0])">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-fab-button>
-                <ion-fab-button (click)="openModal({ firstIndex: i, slicedIndex: null, item: itemsArray[0], role: 'Edit' })">
-                  <ion-icon name="pencil"></ion-icon>
-                </ion-fab-button>
-              </ion-fab-list>
-            </ion-fab>
-            <ion-alert></ion-alert>
-          </td>
+  @if (filteredInventory$ | async) {
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 17.5%" class="table-cell">Name</th>
+          <th style="width: 10%" class="table-cell">Price</th>
+          <th style="width: 12.5%" class="table-cell">Size</th>
+          <th style="width: 12.5%" class="table-cell">SKU</th>
+          <th style="width: 12.5%" class="table-cell">Date Purchased</th>
+          <th style="width: 12.5%" class="table-cell">Date Sold</th>
+          <th style="width: 12.5%" class="table-cell">Location</th>
+          <th style="width: 10%" class="table-cell">Actions</th>
         </tr>
-        @if (itemsArray.length > 1 && expanded[i]) {
-          @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
-            <tr class="accordion" [ngClass]="{ 'accordion-last-item': last }">
-              <td class="table-cell">{{ item.name }}</td>
-              <td class="table-cell">{{ item.price }}</td>
-              <td class="table-cell">{{ item.size }}</td>
-              <td class="table-cell">{{ item.sku }}</td>
-              <td class="table-cell">{{ item.datePurchased }}</td>
-              <td class="table-cell">{{ item.dateSold }}</td>
-              <td class="table-cell">{{ item.location }}</td>
-              <td class="action-menu-td">
-                <ion-fab style="position: relative;">
-                  <ion-fab-button size="small">
-                    <ion-icon name="add"></ion-icon>
+      </thead>
+      <tbody>
+        @for (itemsArray of filteredInventory$ | async; track $index; let i = $index) {
+          <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
+            <td class="table-cell">
+              @if (expanded[i] && itemsArray.length > 1) {
+                <ion-icon name="chevron-down" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
+              } @else if (!expanded[i] && itemsArray.length > 1) {
+                <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
+              }
+              {{ itemsArray[0].item['name'] }}
+              @if (itemsArray.length > 1) {
+                <ion-chip>{{ itemsArray.length }}</ion-chip>
+              }
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0]['acquisitionCost'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].size }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].item['sku'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].item['purchaseDate'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].item['sellDate'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].location }}</div>
+            </td>
+            <td class="action-menu-td">
+              <ion-fab style="position: relative;">
+                <ion-fab-button size="small">
+                  <ion-icon name="add"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-list side="start">
+                  <!--<ion-fab-button (click)="cloneItem(i, itemsArray[0])">
+                    <ion-icon name="duplicate"></ion-icon>
+                  </ion-fab-button>-->
+                  <ion-fab-button (click)="presentAlert(itemsArray[0])">
+                    <ion-icon name="trash"></ion-icon>
                   </ion-fab-button>
-                  <ion-fab-list side="start">
-                    <ion-fab-button (click)="cloneItem(i, item)">
-                      <ion-icon name="duplicate"></ion-icon>
+                  <ion-fab-button (click)="openModal({ item: itemsArray[0], role: 'Edit' })">
+                    <ion-icon name="pencil"></ion-icon>
+                  </ion-fab-button>
+                </ion-fab-list>
+              </ion-fab>
+              <ion-alert></ion-alert>
+            </td>
+          </tr>
+          @if (itemsArray.length > 1 && expanded[i]) {
+            @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
+              <tr class="accordion" [ngClass]="{ 'accordion-last-item': last }">
+                <td class="table-cell">{{ item.item['name'] }}</td>
+                <td class="table-cell">{{ item['acquisitionCost'] }}</td>
+                <td class="table-cell">{{ item.size }}</td>
+                <td class="table-cell">{{ item.item['sku'] }}</td>
+                <td class="table-cell">{{ item.item['purchaseDate'] }}</td>
+                <td class="table-cell">{{ item.item['sellDate'] }}</td>
+                <td class="table-cell">{{ item.location }}</td>
+                <td class="action-menu-td">
+                  <ion-fab style="position: relative;">
+                    <ion-fab-button size="small">
+                      <ion-icon name="add"></ion-icon>
                     </ion-fab-button>
-                    <ion-fab-button (click)="presentAlert({ firstIndex: i, slicedIndex: j }, item)">
-                      <ion-icon name="trash"></ion-icon>
-                    </ion-fab-button>
-                    <ion-fab-button (click)="openModal({ firstIndex: i, slicedIndex: j, item: item, role: 'Edit' })">
-                      <ion-icon name="pencil"></ion-icon>
-                    </ion-fab-button>
-                  </ion-fab-list>
-                </ion-fab>
-              </td>
-            </tr>
+                    <ion-fab-list side="start">
+                      <!--<ion-fab-button (click)="cloneItem(i, item)">
+                        <ion-icon name="duplicate"></ion-icon>
+                      </ion-fab-button>-->
+                      <ion-fab-button (click)="presentAlert(item)">
+                        <ion-icon name="trash"></ion-icon>
+                      </ion-fab-button>
+                      <ion-fab-button (click)="openModal({ item: item, role: 'Edit' })">
+                        <ion-icon name="pencil"></ion-icon>
+                      </ion-fab-button>
+                    </ion-fab-list>
+                  </ion-fab>
+                </td>
+              </tr>
+            }
           }
+        } @empty {
+          <p>There are no items</p>
         }
-      } @empty {
-        <p>There are no items</p>
-      }
-    </tbody>
-    <tfoot>
-      <tr>
-        <th class="table-cell">Count: {{ inventoryCount }}</th>
-      </tr>
-    </tfoot>
-  </table>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th class="table-cell">Count: {{ inventoryCount }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  } @else {
+    <ion-grid style="margin-left: 2rem; margin-right: 2rem; padding: 0;">
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3"><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+        <ion-col><ion-skeleton-text [animated]="true"></ion-skeleton-text></ion-col>
+      </ion-row>
+    </ion-grid>
+  }
 </ion-content>
 

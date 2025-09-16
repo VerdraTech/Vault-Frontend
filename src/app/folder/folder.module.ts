@@ -9,6 +9,8 @@ import { FolderPageRoutingModule } from './folder-routing.module';
 import { FolderPage } from './folder.page';
 
 import { InventoryPage } from '../pages/inventory/inventory.page';
+import { MarketplacePage } from '../pages/marketplace/marketplace.page';
+import { DashboardPage } from '../pages/dashboard/dashboard.page';
 
 @NgModule({
   imports: [
@@ -16,7 +18,9 @@ import { InventoryPage } from '../pages/inventory/inventory.page';
     FormsModule,
     IonicModule,
     FolderPageRoutingModule,
-    InventoryPage
+    InventoryPage,
+    MarketplacePage,
+    DashboardPage
   ],
   declarations: [FolderPage]
 })

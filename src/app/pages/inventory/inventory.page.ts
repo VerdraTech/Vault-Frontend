@@ -5,8 +5,7 @@ import { Item, Items } from 'src/app/model/item';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import type { OverlayEventDetail } from '@ionic/core';
-import { merge } from 'rxjs';
+import { map, merge, Observable } from 'rxjs';
 
 enum ModalMode {
   ADD = 'add',
@@ -14,15 +13,11 @@ enum ModalMode {
 }
 
 type EditModalParams = {
-  firstIndex: number,
-  slicedIndex: number | null,
   item: Item,
   role: 'Edit',
 }
 
 type AddModalParams = {
-  firstIndex: null,
-  slicedIndex: null,
   item: null,
   role: 'Add'
 }
@@ -44,11 +39,12 @@ type ModalParams = EditModalParams | AddModalParams;
 export class InventoryPage implements OnInit {
   private inventoryService = inject(InventoryService)
   private formBuilder = inject(FormBuilder)
-  items: Items[] = [];
+  items = [];
+  items$!: Observable<{ items: Items[], total: number }>;
   expanded: boolean[] = [];
-  searchForm = new FormControl('');
-  filteredInventory: Items[] = [];
+  filteredInventory$!: Observable<Items[]>;
   filterForm = this.formBuilder.group({
+    itemName: [''],
     size: [''],
     listed: [''],
     location: ['']
@@ -66,6 +62,7 @@ export class InventoryPage implements OnInit {
   ]
   sizeOptions = [
     'N/A',
+    '8',
     '7W',
     '8W',
     '9W',
@@ -91,23 +88,25 @@ export class InventoryPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.items = this.inventoryService.getInventory();
-    this.filteredInventory = this.items;
+    this.items$ = this.inventoryService.getUserInventory()
+    this.filteredInventory$ = this.items$.pipe(
+      map((response: any) => {
+        this.inventoryCount = response.total
+        return response.items
+      }
+    ));
     this.expanded = new Array(this.items.length).fill(false);
-    merge(
-      this.filterForm.valueChanges,
-      this.searchForm.valueChanges
-    ).subscribe(() => {
+   
+    this.filterForm.valueChanges.subscribe(() => {
       this.applyFilterAndSearch();
     })
-    this.updateItemCount()
   }
 
   toggleAccordion(index: number) {
     this.expanded[index] = !this.expanded[index];
   }
 
-  async openModal(params: ModalParams) {
+  async openModal(params: any) {
     const modal = await this.modalController.create({
       component: ModalComponent,
       componentProps: {
@@ -118,18 +117,18 @@ export class InventoryPage implements OnInit {
     modal.present()
 
     const { data, role } = await modal.onWillDismiss();
-
-    if (role === 'Edit' && params.firstIndex !== null) {
-      this.updateItem(params.firstIndex, params.slicedIndex, data)
+    data.acquisitionCost = Number(data.price)
+    if (role === 'Edit') {
+      this.updateItem(data, params.item['id'])
     } else if (role === 'Add') {
       this.addItem(data.quantity, data)
     }
   }
 
-  async presentAlert(data: any, item: Item) {
+  async presentAlert(item: Item) {
     const alert = await this.alertController.create({
       header: 'Delete Item',
-      message: `Are you sure you want to delete ${item.name}? This action is irreversible.`,
+      message: `Are you sure you want to delete ${item['name']}? This action is irreversible.`,
       buttons: this.alertButtons,
     });
     alert.present();
@@ -137,104 +136,39 @@ export class InventoryPage implements OnInit {
     const { role } = await alert.onWillDismiss();
 
     if (role === 'confirm') {
-      this.deleteItem(data.firstIndex, data.slicedIndex, item);
+      this.deleteItem(item.id)
     }
   }
 
-  addItem(quantity: number, data: Item) {
-    this.items.push([{...data}])
-    if (quantity > 1) {
-      for (let i = 0; i < quantity - 1; i++) {
-        this.items[this.items.length - 1].push({...data})
-      }
-    }
-    this.updateItemCount();
-  }
+  // cloneItem(index: number, item: Item ) {
+  //   this.items[index].push(item);
+  //   if (!this.expanded[index]) this.toggleAccordion(index)
+  // }
 
-  cloneItem(index: number, item: Item ) {
-    this.items[index].push(item);
-    if (!this.expanded[index]) this.toggleAccordion(index)
-
-    this.updateItemCount();
-  }
-
-  updateItem(firstIndex: number, slicedIndex: number | null, data: Item) {
-    if (slicedIndex === null) {
-      // update first item of the accordion
-      this.items[firstIndex][0] = { ...data };
-    } else {
-      const secondIndex = slicedIndex + 1
-      this.items[firstIndex][secondIndex] = { ...data };
-    }
-  }
-
-  deleteItem(firstIndex: number, slicedIndex: number | null, data: Item) {
-    if (slicedIndex === null) {
-      // delete first item of the accordion
-      this.items[firstIndex].splice(0, 1);
-      if (this.items[firstIndex].length === 0) {
-        this.items.splice(firstIndex, 1)
-      }
-    } else {
-      const secondIndex = slicedIndex + 1
-      this.items[firstIndex][secondIndex] = { ...data };
-      this.items[firstIndex].splice(secondIndex, 1);
-    }
-    this.updateItemCount();
-  }
-
-  updateItemCount() {
-    this.inventoryCount = this.items.flat(Infinity).length;
-  }
-
-  applySearch(queryValue: string | null, items: any) {
-    let matchingResults: Item[] = [];
-
-    items.forEach((item:any) => {
-      const matchesSearch = item.name.toLowerCase().includes(queryValue?.toLowerCase() || '');
-      if (matchesSearch) {
-        matchingResults.push(item)
-      }
-    });
-  
-    if (matchingResults.length === 0) {
-      return []
-    }
-    return matchingResults;
-  }
-
-  applyFilter(selectedFilters: Filters[]) {
-    let filterResults: Item[] = [];
-
-    this.items.forEach(itemArray => {
-       itemArray.filter(item => {
-        const matchesFilters = selectedFilters.every((obj) => {
-          if (item[obj.key] === obj.value) {
-            return true
-          }
-          return false
-        })
-        if (matchesFilters) {
-          filterResults.push(item)
-        }
-       })
-     })
-     return filterResults;
-  }
-
-  applyFilterAndSearch() {
-    const queryValue = this.searchForm.getRawValue()
-    const filterValues = this.filterForm.getRawValue()
-    const selectedFilters = Object.entries(filterValues)
-      .filter(([_, value]) => value !== null && value !== undefined && value !== '')
-      .map(([key, value]) => ({ key, value }))
-
-    const filteredItems = this.applyFilter(selectedFilters as [{ key: string, value: string }])
-    const result = this.applySearch(queryValue, filteredItems)
-    this.filteredInventory = this.inventoryService.groupBySku(result)
+  addItem(quantity: number, data: any) {
+    data
+    this.inventoryService.addItem(quantity, data);
   }
 
   removeFilter(filterOption: string) {
     this.filterForm.get(filterOption)?.reset('')
+  }
+
+  deleteItem(id: any) {
+    this.inventoryService.deleteItem(id);
+  }
+
+  updateItem(data: any, id: string) {
+    this.inventoryService.updateItem(data, id)
+  }
+
+  applyFilterAndSearch() {
+    const filterValues = this.filterForm.getRawValue()
+    this.filteredInventory$ = this.inventoryService.getFilteredUserInventory(filterValues).pipe(
+      map((response: any) => {
+        this.inventoryCount = response.total
+        return response.items
+      }
+    ));
   }
 }

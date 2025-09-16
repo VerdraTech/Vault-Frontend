@@ -57,7 +57,7 @@ tr:hover {
   margin-bottom: 2rem;
 }
 
-.badge-container {
+.chip-container {
   padding-left: 1.5rem;
   padding-bottom: 0.5rem;
 }
@@ -85,4 +85,8 @@ ion-badge {
     background-color: hsl(211 20 16);
     border: none;
   }
+}
+
+ion-skeleton-text {
+  height: 3rem;
 }

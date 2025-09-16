@@ -4,6 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>{{ folder }}</ion-title>
+    <ion-button slot="end" shape="round">
+      <ion-icon slot="icon-only" name="exit-outline"></ion-icon>
+    </ion-button>
     <ion-button slot="end" shape="round" (click)="navigateProfile()">
       <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
     </ion-button>
@@ -24,5 +27,11 @@
 
   @if (folder === "inventory") {
     <app-inventory></app-inventory>
+  }
+  @if (folder === "marketplace") {
+    <app-marketplace></app-marketplace>
+  }
+  @if (folder === "dashboard") {
+    <app-dashboard></app-dashboard>
   }
 </ion-content>

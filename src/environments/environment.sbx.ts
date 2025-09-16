@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:8000/'
+  apiUrl: 'https://a0xul8b4t1.execute-api.us-east-2.amazonaws.com/vault-backend'
 };
 
 /*

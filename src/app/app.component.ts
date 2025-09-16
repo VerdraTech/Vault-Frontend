@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from './core/auth/auth.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { EnvResolverService } from './core/env-resolver/env-resolver.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +13,7 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
   public appPages = [
     { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
+    { title: 'Dashboard', url: '/folder/dashboard', icon: 'analytics' },
     { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
     { title: 'Inventory', url: '/folder/inventory', icon: 'archive' },
     { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
@@ -21,6 +24,8 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   private authService = inject(AuthService);
+  private http = inject(HttpClient);
+  private envService = inject(EnvResolverService)
   loggedIn = true;
   
   constructor(
@@ -28,22 +33,11 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.authService.startSupabase();
-   
-    // this.authService.loggedIn$.subscribe(loggedIn => {
-    //   if (loggedIn) {
-    //     this.loggedIn = true;
-    //     this.router.navigate(['/folder/inbox'])
-    //     //
-    //   } else {
-    //     this.router.navigate(['/login'])
-    //   }
-    // })
+    console.log('Start App')
+    console.log(this.envService.apiUrl)
+     this.http.get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true }).subscribe((response) => {
+      console.log(response.id)
+      this.authService.setUser(response.id)
+    })
   }
-
-  // signOut() {
-  //   this.authService.signOut();
-  //   this.loggedIn = false;
-  //   this.router.navigate(['/login'])
-  // }
 }
