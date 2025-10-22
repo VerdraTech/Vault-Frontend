@@ -20,15 +20,12 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   private authService = inject(AuthService);
-  loggedIn = true;
-  
-  constructor(
-    private router: Router
-  ) {}
+  loggedIn = false;
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     // this.authService.startSupabase();
-   
     // this.authService.loggedIn$.subscribe(loggedIn => {
     //   if (loggedIn) {
     //     this.loggedIn = true;
