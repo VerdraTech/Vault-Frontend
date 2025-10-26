@@ -1,0 +1,107 @@
+// Navbar container - full width and fixed at top
+ion-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+ion-toolbar {
+  width: 100%;
+  --color: white;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding-left: 16px;
+  gap: 16px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 25%;
+}
+
+// Mobile menu styles
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-top: 1px solid var(--ion-color-medium);
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+// Desktop navigation spacing
+ion-buttons[slot="end"] {
+  gap: 0.5rem;
+}
+
+// Mobile menu button styling
+ion-button[fill="clear"] {
+  --color: var(--ion-color-primary);
+}
+
+// Mobile menu items
+.mobile-menu ion-item {
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --min-height: 3rem;
+}
+
+.mobile-menu ion-item:last-child {
+  border-bottom: none;
+}
+
+// Responsive design
+@media (max-width: 767px) {
+  .mobile-menu {
+    position: fixed;
+    top: 56px; // Height of ion-toolbar
+  }
+}
+
+// Add padding to body to account for fixed navbar
+:host {
+  display: block;
+}
+
+// Ensure content doesn't hide behind fixed navbar
+ion-content {
+  --padding-top: 56px; // Height of ion-toolbar
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  ion-toolbar {
+    --background: #131313;
+    --color: white;
+  }
+
+  .mobile-menu {
+    background: #131313;
+    border-top-color: var(--ion-color-medium);
+  }
+}

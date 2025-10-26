@@ -2,13 +2,42 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <h1 class="hero-title">Welcome to Vault</h1>
-      <p class="hero-subtitle">Your secure inventory management solution</p>
+      <h1 class="hero-title">Manage Your Inventory</h1>
+      <!-- <p class="hero-subtitle">Your secur  e inventory management solution</p> -->
       <p class="hero-description">
-        Organize, track, and manage your inventory with ease. Built for modern
-        businesses and personal use.
+        Ultimate platform for sellers to track inventory, monitor sales, and
+        maximize profits
       </p>
-      <div class="hero-buttons">
+      <div class="email-signup-container">
+        <ion-input
+          type="email"
+          placeholder="Enter your email"
+          class="email-input"
+          [(ngModel)]="email"
+          (keyup.enter)="joinWaitlist()"
+        ></ion-input>
+        <ion-button
+          class="join-button"
+          (click)="joinWaitlist()"
+          [disabled]="!email || isSubmitting"
+        >
+          <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+          <span *ngIf="!isSubmitting">Join Waitlist</span>
+        </ion-button>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="message error-message">
+        <ion-icon name="alert-circle"></ion-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="message success-message">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <span>{{ successMessage }}</span>
+      </div>
+      <!-- <div class="hero-buttons">
         <ion-button
           class="primary-button"
           size="large"
@@ -17,11 +46,11 @@
         >
           Get Started
         </ion-button>
-      </div>
+      </div> -->
     </div>
-    <div class="hero-image">
+    <!-- <div class="hero-image">
       <ion-icon name="shield-checkmark" class="hero-icon"></ion-icon>
-    </div>
+    </div> -->
   </div>
 
   <!-- Features Section -->

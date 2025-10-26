@@ -13,8 +13,14 @@
   min-height: 100vh;
   padding: 2rem;
   text-align: center;
-  //   background: linear-gradient(135deg, #020929 0%, #000000 100%);
-  background: #131313;
+  background: radial-gradient(
+      ellipse 150% 60% at center bottom,
+      #0d2240 0%,
+      #0d2240 20%,
+      #131313 40%,
+      #131313 100%
+    ),
+    linear-gradient(180deg, #131313 0%, #131313 100%);
   position: relative;
   overflow: hidden;
 }
@@ -36,14 +42,60 @@
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(45deg, #fff, #e0e7ff);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f8f9fa 15%,
+    #e9ecef 30%,
+    #dee2e6 45%,
+    #adb5bd 60%,
+    #6c757d 85%,
+    #495057 90%,
+    #343a40 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  background-size: 100% 100%;
   animation: fadeInUp 1s ease-out;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+.hero-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(200, 200, 200, 0.6) 25%,
+    rgba(150, 150, 150, 0.4) 50%,
+    rgba(100, 100, 100, 0.6) 75%,
+    rgba(50, 50, 50, 0.8) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  z-index: -1;
+}
+
+@keyframes metallicShine {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
 }
 
 .hero-subtitle {
@@ -55,7 +107,7 @@
 }
 
 .hero-description {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   line-height: 1.6;
   margin-bottom: 2.5rem;
   color: rgba(255, 255, 255, 0.8);
@@ -328,5 +380,141 @@
   .features-section,
   .cta-section {
     padding: 3rem 1rem;
+  }
+}
+
+/* Email Signup Container */
+.email-signup-container {
+  display: flex;
+  gap: 12px;
+  background-color: rgb(53, 53, 53);
+  border-radius: 12px;
+  padding: 4px 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  margin: 2rem auto 0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+.email-input {
+  flex: 1;
+  --background: transparent;
+  --color: white;
+  --placeholder-color: #666;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 10px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  text-align: left;
+  --highlight-color: #2c71d2;
+  --highlight-color-focused: #2c71d2;
+
+  &:focus {
+    --color: white;
+    --highlight-color: #2c71d2;
+  }
+
+  &::placeholder {
+    text-align: left;
+  }
+}
+
+.join-button {
+  --background: white;
+  --color: #333;
+  --border-radius: 8px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: none;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not([disabled]) {
+    --background: #f0f0f0;
+    --color: #000;
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    --background: #ccc;
+    --color: #666;
+    cursor: not-allowed;
+  }
+
+  ion-spinner {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .email-signup-container {
+    flex-direction: column;
+    gap: 8px;
+    margin: 1.5rem auto 0;
+    max-width: 90%;
+  }
+
+  .join-button {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Message Styles */
+.message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 1rem auto 0;
+  max-width: 500px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-out;
+
+  ion-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.success-message {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
