@@ -6,9 +6,9 @@ import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.page.html',
-  styleUrls: ['./signup.page.scss'],
+  selector: 'app-landing-page',
+  templateUrl: './landing-page.page.html',
+  styleUrls: ['./landing-page.page.scss'],
   standalone: true,
   imports: [
     IonicModule,
@@ -18,26 +18,50 @@ import { environment } from 'src/environments/environment';
     CommonModule,
   ],
 })
-export class SignupPage {
-  email: string = '';
+export class LandingPage {
+  isModalOpen: boolean = false;
   isSubmitting: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
 
+  formData = {
+    name: '',
+    email: '',
+  };
+
   constructor() {}
 
-  async joinWaitlist() {
-    if (!this.email || this.isSubmitting) {
+  openWaitlistModal() {
+    this.isModalOpen = true;
+    this.clearMessages();
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    this.clearMessages();
+    this.resetForm();
+  }
+
+  clearMessages() {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  resetForm() {
+    this.formData.name = '';
+    this.formData.email = '';
+  }
+
+  async submitWaitlistForm() {
+    if (!this.formData.name || !this.formData.email || this.isSubmitting) {
       return;
     }
 
-    // Clear previous messages
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.clearMessages();
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.email)) {
+    if (!emailRegex.test(this.formData.email)) {
       this.errorMessage = 'Please enter a valid email address';
       return;
     }
@@ -51,7 +75,8 @@ export class SignupPage {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: this.email,
+          name: this.formData.name,
+          email: this.formData.email,
         }),
       });
 
@@ -72,16 +97,15 @@ export class SignupPage {
       const result = await response.json();
       console.log('Waitlist submission result:', result);
 
-      // Check if the API returned a success status
       if (result.status === 'success' || response.ok) {
         this.successMessage = 'Successfully joined the waitlist!';
-        console.log('Successfully joined waitlist:', this.email);
+        console.log('Successfully joined waitlist:', this.formData.email);
 
-        // Reset form after a short delay
+        // Reset form and close modal after a short delay
         setTimeout(() => {
-          this.email = '';
-          this.successMessage = '';
-        }, 3000);
+          this.resetForm();
+          this.closeModal();
+        }, 2000);
       } else {
         throw new Error(result.message || 'Failed to join waitlist');
       }

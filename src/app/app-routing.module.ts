@@ -10,7 +10,9 @@ const routes: Routes = [
   {
     path: 'signup',
     loadComponent: () =>
-      import('./pages/signup/signup.page').then((m) => m.SignupPage),
+      import('./pages/landing-page/landing-page.page').then(
+        (m) => m.LandingPage
+      ),
   },
   {
     path: 'waitlist',

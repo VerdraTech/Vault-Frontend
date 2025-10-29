@@ -462,6 +462,110 @@
   }
 }
 
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem auto 0;
+  max-width: 500px;
+}
+
+.waitlist-button {
+  --background: white;
+  --color: #333;
+  --border-radius: 8px;
+  --padding-start: 48px;
+  --padding-end: 48px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  min-width: 200px;
+
+  &:hover {
+    --background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Modal Styles */
+.modal-content {
+  --background: linear-gradient(135deg, #131313 0%, #0d2240 100%);
+}
+
+.modal-form-container {
+  padding: 2rem 1rem;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.modal-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 2.5rem;
+  text-align: start;
+  line-height: 1.6;
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+}
+
+.submit-button {
+  --background: white;
+  --color: #333;
+  --border-radius: 8px;
+  font-weight: 600;
+  height: 50px;
+  font-size: 16px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+
+  &:hover:not([disabled]) {
+    --background: #f0f0f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+ion-item {
+  --background: rgba(255, 255, 255, 0.1);
+  --border-color: transparent;
+  --border-width: 0;
+  --color: white;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 0px;
+  --padding-bottom: 0px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  ion-label {
+    --color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+  }
+
+  ion-input {
+    --color: white;
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    --border-width: 0;
+    --border-style: none;
+    --border-color: transparent;
+    font-size: 15px;
+  }
+}
+
+ion-toolbar {
+  --background: #131313;
+  --color: white;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .email-signup-container {
@@ -474,6 +578,15 @@
   .join-button {
     width: 100%;
     min-width: auto;
+  }
+
+  .waitlist-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .modal-form-container {
+    padding: 1.5rem;
   }
 }
 
