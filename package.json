@@ -2,7 +2,7 @@
   "name": "vault-frontend",
   "version": "0.0.1",
   "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "homepage": "https://verdratech.github.io/Vault-Frontend/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
