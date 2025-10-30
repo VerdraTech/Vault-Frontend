@@ -4,6 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
+import { from, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-landing-page',
@@ -52,7 +54,7 @@ export class LandingPage {
     this.formData.email = '';
   }
 
-  async submitWaitlistForm() {
+  submitWaitlistForm() {
     if (!this.formData.name || !this.formData.email || this.isSubmitting) {
       return;
     }
@@ -68,56 +70,51 @@ export class LandingPage {
 
     this.isSubmitting = true;
 
-    try {
-      const response = await fetch(`${environment.BASE_URL}/waitlist`, {
+    from(
+      fetch(`${environment.BASE_URL}/waitlist`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: this.formData.name,
           email: this.formData.email,
         }),
+      })
+    )
+      .pipe(
+        switchMap((res) => {
+          if (res.ok) {
+            return from(res.json());
+          }
+          return from(res.text()).pipe(
+            switchMap((text) =>
+              throwError(() => new Error(text || `HTTP ${res.status}`))
+            )
+          );
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          console.log('Waitlist submission result:', result);
+          if (result?.status === 'success') {
+            this.successMessage = 'Successfully joined the waitlist!';
+            setTimeout(() => {
+              this.resetForm();
+              this.closeModal();
+            }, 2000);
+          } else {
+            this.errorMessage = result?.message || 'Failed to join waitlist';
+          }
+        },
+        error: (err) => {
+          console.error('Error joining waitlist:', err);
+          const msg =
+            err?.message || 'Failed to join waitlist. Please try again.';
+          this.errorMessage = msg;
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        },
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMsg = `Server error (${response.status})`;
-
-        try {
-          const errorJson = JSON.parse(errorText);
-          errorMsg = errorJson.message || errorMsg;
-        } catch {
-          errorMsg = errorText || errorMsg;
-        }
-
-        throw new Error(errorMsg);
-      }
-
-      const result = await response.json();
-      console.log('Waitlist submission result:', result);
-
-      if (result.status === 'success' || response.ok) {
-        this.successMessage = 'Successfully joined the waitlist!';
-        console.log('Successfully joined waitlist:', this.formData.email);
-
-        // Reset form and close modal after a short delay
-        setTimeout(() => {
-          this.resetForm();
-          this.closeModal();
-        }, 2000);
-      } else {
-        throw new Error(result.message || 'Failed to join waitlist');
-      }
-    } catch (error) {
-      console.error('Error joining waitlist:', error);
-      this.errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Failed to join waitlist. Please try again.';
-    } finally {
-      this.isSubmitting = false;
-    }
   }
 
   // Method to handle smooth scrolling to sections

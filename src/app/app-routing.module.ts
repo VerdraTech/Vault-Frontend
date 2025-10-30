@@ -4,21 +4,9 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'signup',
-    pathMatch: 'full',
-  },
-  {
-    path: 'signup',
     loadComponent: () =>
       import('./pages/landing-page/landing-page.page').then(
         (m) => m.LandingPage
-      ),
-  },
-  {
-    path: 'waitlist',
-    loadComponent: () =>
-      import('./components/waitlist-signup/waistlist-signup.page').then(
-        (m) => m.WaitlistSignupComponent
       ),
   },
   {
@@ -40,7 +28,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules,
+    }),
   ],
   exports: [RouterModule],
 })

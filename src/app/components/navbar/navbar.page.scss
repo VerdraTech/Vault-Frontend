@@ -1,4 +1,3 @@
-// Navbar container - full width and fixed at top
 ion-header {
   position: fixed;
   top: 0;
@@ -10,7 +9,7 @@ ion-header {
 
 ion-toolbar {
   width: 100%;
-  --color: white;
+  --color: #131313;
 }
 
 .logo-title {
@@ -75,15 +74,13 @@ ion-button[fill="clear"] {
   border-bottom: none;
 }
 
-// Responsive design
 @media (max-width: 767px) {
   .mobile-menu {
     position: fixed;
-    top: 56px; // Height of ion-toolbar
+    top: 56px;
   }
 }
 
-// Add padding to body to account for fixed navbar
 :host {
   display: block;
 }

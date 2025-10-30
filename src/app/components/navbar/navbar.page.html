@@ -1,20 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <div class="logo-title">
-      <img src="assets/vLogo.PNG" alt="Vault" class="logo" />
+      <img src="assets/vault-logo.png" alt="Vault" class="logo" />
       <span class="logo-text">Vault</span>
     </div>
 
     <!-- Desktop Navigation -->
     @if(loggedIn()) {
     <ion-buttons slot="end" class="hidden md:flex">
-      <ion-button fill="clear" routerLink="/signup">Sign Up</ion-button>
-      <ion-button fill="clear" routerLink="/login">Login</ion-button>
       <ion-button fill="clear" routerLink="/inventory">Inventory</ion-button>
-      <ion-button fill="clear" routerLink="/waitlist"
-        >Waitlist</ion-button
-      > </ion-buttons
-    >}
+    </ion-buttons>
+    }
 
     <!-- Mobile Menu Button -->
     <!-- <ion-buttons slot="end" class="md:hidden">
