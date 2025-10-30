@@ -7,8 +7,7 @@ ion-grid {
 }
 
 table {
-  margin-left: 2rem;
-  margin-right: 2rem;
+  margin: 0 2rem 3rem 2rem;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   border-collapse: separate;
@@ -16,8 +15,21 @@ table {
   font-weight: 500;
 }
 
+td, th {
+  border-bottom: 2px solid #f5f6fa;
+}
+
 tr:hover {
   box-shadow: 5px 0 10px grey;
+}
+
+ion-searchbar {
+  --border-radius: 5px !important;
+}
+
+.csv-upload {
+  --background: white;
+  --color: hsl(209, 21%, 19%);
 }
 
 .table-cell {

@@ -1,23 +1,23 @@
 
 <ion-content [fullscreen]="true" [scrollX]="true">
-  <ion-grid>
+  <ion-grid style="margin-bottom: 2rem;">
     <ion-row class="ion-align-items-center">
       <ion-col>
         <ion-searchbar placeholder="Search Items" show-clear-button="focus" [debounce]="1000" [formControl]="searchForm"></ion-searchbar>
       </ion-col>
-      <ion-col>
-        <ion-button fill="solid" shape="round" (click)="openModal({ firstIndex: null, slicedIndex: null, item: null, role: 'Add' })">
+      <ion-col style="display: flex; justify-content: flex-end; margin-right: 1.25rem;">
+        <input type="file" #csvInput (change)="onFileSelected($event)" accept=".csv" style="display: none;">
+        <ion-button class="csv-upload" (click)="csvInput.click()">
+          <ion-icon name="download-outline" style="margin-top: -5px; margin-right: 0.5rem;"></ion-icon>
+          Import CSV
+        </ion-button>
+        <ion-button fill="solid" (click)="openModal({ firstIndex: null, slicedIndex: null, item: null, role: 'Add' })">
           Add Item
         </ion-button>
-        <input 
-          type="file" 
-          accept=".csv"
-          (change)="onFileSelected($event)"
-        >
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div class="filter-box">
+  <!--<div class="filter-box">
   <ion-grid [formGroup]="filterForm">
     <ion-row>
       <ion-col>
@@ -51,12 +51,17 @@
       
         <ion-badge>{{ this.filterForm.controls['listed'].value }}</ion-badge>
       </div>
-  </div>
+  </div>-->
   
   <table >
     <thead>
       <tr>
-        <th style="width: 17.5%" class="table-cell">Name</th>
+        <th style="width: 5%" class="table-cell"></th>
+        <th style="width: 5%" class="table-cell">
+          <input type="checkbox"  />
+        </th>
+        <th style="width: 5%" class="table-cell">Image</th>
+        <th style="width: 17.5%" class="table-cell">Product</th>
         <th style="width: 10%" class="table-cell">Price</th>
         <th style="width: 12.5%" class="table-cell">Size</th>
         <th style="width: 12.5%" class="table-cell">SKU</th>
@@ -75,6 +80,16 @@
             } @else if (!expanded[i] && itemsArray.length > 1) {
               <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
             }
+          </td>
+          <td class="table-cell">
+            <input type="checkbox" />
+          </td>
+          <td class="table-cell">
+            <ion-thumbnail>
+              <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+            </ion-thumbnail>
+          </td>
+          <td class="table-cell">
             {{ itemsArray[0].name }}
           </td>
           <td class="table-cell" >
@@ -118,6 +133,15 @@
         @if (itemsArray.length > 1 && expanded[i]) {
           @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
             <tr class="accordion" [ngClass]="{'accordion-last-item': last}">
+              <td class="table-cell"></td>
+              <td class="table-cell">
+                <input type="checkbox" />
+              </td>
+              <td class="table-cell">
+                <ion-thumbnail>
+                  <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+                </ion-thumbnail>
+              </td>
               <td class="table-cell">{{ item.name }}</td>
               <td class="table-cell">{{ item.price }}</td>
               <td class="table-cell">{{ item.size }}</td>

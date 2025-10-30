@@ -36,6 +36,10 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
+:root {
+  --ion-color-primary: hsl(208, 31%, 23%);
+}
+
 @media only screen and (min-width: 933px) {
   ion-modal {
     --border-radius: 0.5rem;
