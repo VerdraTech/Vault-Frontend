@@ -38,7 +38,7 @@
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: 1024px;
 }
 
 .hero-title {
@@ -296,6 +296,37 @@ ion-item {
 ion-toolbar {
   --background: #131313;
   --color: white;
+}
+
+/* Simple footer */
+.footer {
+  background: #0f1115;
+  color: #e5e7eb;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.footer-links {
+  display: inline-flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.footer-links a {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: #e5e7eb;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+}
+
+.footer-links ion-icon {
+  font-size: 20px;
 }
 
 /* Responsive Design */

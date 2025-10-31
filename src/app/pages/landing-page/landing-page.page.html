@@ -19,7 +19,7 @@
       </div>
 
       <!-- Waitlist Modal -->
-      <ion-modal [isOpen]="isModalOpen">
+      <ion-modal [isOpen]="isModalOpen" (didDismiss)="onModalDidDismiss()">
         <ng-template>
           <ion-header>
             <ion-toolbar>
@@ -89,4 +89,27 @@
       </ion-modal>
     </div>
   </div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a
+        href="https://www.instagram.com/vaultframeworks"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+      >
+        <ion-icon name="logo-instagram"></ion-icon>
+        <span>Instagram</span>
+      </a>
+      <a
+        href="https://x.com/VaultFrameworks"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Twitter"
+      >
+        <ion-icon name="logo-twitter"></ion-icon>
+        <span>Twitter/X</span>
+      </a>
+    </div>
+  </footer>
 </ion-content>

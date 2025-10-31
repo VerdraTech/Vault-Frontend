@@ -44,6 +44,13 @@ export class LandingPage {
     this.resetForm();
   }
 
+  onModalDidDismiss() {
+    // Sync local state when modal is closed via backdrop or swipe
+    this.isModalOpen = false;
+    this.clearMessages();
+    this.resetForm();
+  }
+
   clearMessages() {
     this.errorMessage = '';
     this.successMessage = '';
