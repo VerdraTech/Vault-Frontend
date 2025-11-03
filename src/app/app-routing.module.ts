@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'inventory',
     loadComponent: () => import('./pages/inventory/inventory.page').then( m => m.InventoryPage)
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
   }
 ];
 

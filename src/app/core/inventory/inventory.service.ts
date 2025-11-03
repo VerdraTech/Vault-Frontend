@@ -10,7 +10,8 @@ export class InventoryService {
   constructor() { }
 
   getInventory() {
-    let inv = this.groupBySku(this.tempInventory)
+    // let inv = this.groupBySku(this.tempInventory)
+    let inv = this.groupBySku(mockInventory)
     return inv;
   }
 

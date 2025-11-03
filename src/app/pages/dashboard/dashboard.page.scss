@@ -1,0 +1,42 @@
+.metric-tile {
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  background-color: #FFFF;
+  padding: 1rem;
+  font-weight: 700;
+  height: 8rem; // 150px
+}
+
+.chart {
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  background-color: #FFFF;
+  padding: 1rem;
+  font-weight: 700;
+  height: 50vh;
+  margin-bottom: 2rem;
+}
+
+.dashboard-label {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-between;
+}
+
+.dashboard-stat {
+  margin: 2rem 0 0 0; 
+  font-size: xx-large;
+}
+
+ion-select::part(container) {
+  height: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .metric-tile {
+    background-color: hsl(209, 21%, 19%);
+  }
+  .chart {
+    background-color: hsl(209, 21%, 19%);
+  }
+}

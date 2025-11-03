@@ -24,4 +24,9 @@
       <app-inventory></app-inventory>
     </ion-content>
   }
+  @if (folder === "dashboard") {
+    <ion-content [fullscreen]="true">
+      <app-dashboard></app-dashboard>
+    </ion-content>
+  }
 </ion-content>
