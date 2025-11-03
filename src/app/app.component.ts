@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
     { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
     { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
     { title: 'Inventory', url: '/folder/inventory', icon: 'paper-plane' },
+    { title: 'Dashboard', url: '/folder/dashboard', icon: 'paper-plane' },
     { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
     { title: 'Archived', url: '/folder/archived', icon: 'archive' },
     { title: 'Trash', url: '/folder/trash', icon: 'trash' },

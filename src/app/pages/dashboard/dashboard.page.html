@@ -1,0 +1,68 @@
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col style="display: flex; justify-content: flex-end;">
+        <ion-select labelPlacement="stacked" label="Filter" fill="outline" placeholder="Select" interface="popover" value="'This Month'" style="width: 20%; margin: 1rem 0 1rem 0;">
+          <ion-select-option value="'This Month'">This Month</ion-select-option>
+          <ion-select-option value="'This Week'">This Week</ion-select-option>
+          <ion-select-option value="'Today'">Today</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            Total Sales
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <div class="dashboard-stat">
+            71
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            Total Revenue
+            <ion-icon name="logo-usd"></ion-icon>
+          </div>
+          <div class="dashboard-stat">
+            23616
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            Total Profit
+            <ion-icon name="rocket-outline"></ion-icon>
+          </div>
+          <div class="dashboard-stat">
+            6061
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            Inventory Value
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+          <div class="dashboard-stat">
+            57605
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col>
+        <div class="chart">
+          Performance Overview
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
