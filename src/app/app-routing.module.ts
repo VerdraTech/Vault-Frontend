@@ -20,14 +20,14 @@ const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
   },
-  {
-    path: 'inventory',
-    loadComponent: () => import('./pages/inventory/inventory.page').then( m => m.InventoryPage)
-  },
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
-  }
+  // {
+  //   path: 'inventory',
+  //   loadComponent: () => import('./pages/inventory/inventory.page').then( m => m.InventoryPage)
+  // },
+  // {
+  //   path: 'dashboard',
+  //   loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
+  // }
 ];
 
 @NgModule({

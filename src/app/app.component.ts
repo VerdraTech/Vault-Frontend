@@ -9,16 +9,13 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Inventory', url: '/folder/inventory', icon: 'paper-plane' },
-    { title: 'Dashboard', url: '/folder/dashboard', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    { title: 'Dashboard', url: '/folder/dashboard', icon: 'stats-chart' },
+    { title: 'Inventory', url: '/folder/inventory', icon: 'cube' },
+    { title: 'Sales', url: '/folder/sales', icon: 'trending-up' },
+    { title: 'Shipping', url: '/folder/shipping', icon: 'car' },
+    { title: 'Analytics', url: '/folder/analytics', icon: 'analytics' },
+    { title: 'Settings', url: '/folder/settings', icon: 'settings' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   private authService = inject(AuthService);
   loggedIn = true;
