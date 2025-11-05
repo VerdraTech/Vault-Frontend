@@ -1,60 +1,169 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { AuthChangeEvent, AuthSession, createClient, SupabaseClient  } from '@supabase/supabase-js';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, from, throwError, timer } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+
+export interface User {
+  id: string;
+  email: string;
+  cognito_sub?: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private supabase!: SupabaseClient;
-  private httpClient = inject(HttpClient)
-  _session: AuthSession | null = null;
-  _loggedIn = new BehaviorSubject<boolean>(false);
-  loggedIn$ = this._loggedIn.asObservable()
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
-  constructor() { }
+  private readonly API_BASE = environment.BASE_URL;
+  private readonly REFRESH_INTERVAL = 15 * 60 * 1000;
+  private refreshTimer?: any;
 
-  startSupabase() {
-    this.getSupabaseApiKey().subscribe((response) => {
-      this.supabase = createClient(response.supabaseUrl, response.supabaseApiKey)
-      this.getAuthChange()
-    })
+  private _isAuthenticated = new BehaviorSubject<boolean>(false);
+  private _currentUser = new BehaviorSubject<User | null>(null);
+
+  isAuthenticated$ = this._isAuthenticated.asObservable();
+  currentUser$ = this._currentUser.asObservable();
+
+  constructor() {
+    setTimeout(() => {
+      this.initializeCsrfToken();
+
+      this.startTokenRefresh();
+    }, 0);
   }
 
-  getSupabaseApiKey(): Observable<any> {
-    return this.httpClient.get('http://localhost:4000/api/supabase');
+  private initializeCsrfToken(): void {
+    this.http
+      .get(`${this.API_BASE}/auth/csrf-token`, {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: () => {
+          console.log('CSRF token initialized');
+        },
+        error: (error) => {
+          console.error('Failed to initialize CSRF token:', error);
+        },
+      });
   }
 
-  getAuthChange() {
-    const { data: { subscription } } =  this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, sess: AuthSession | null) => {
-      console.log(event, sess)
-      if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !sess)) {
-        this._loggedIn.next(false)
-      } else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && sess)) {
-        this._loggedIn.next(true)
+  checkAuthStatus(): void {
+    this.getCurrentUser().subscribe({
+      next: (user) => {
+        this._isAuthenticated.next(true);
+        this._currentUser.next(user);
+      },
+      error: (error) => {
+        this._isAuthenticated.next(false);
+        this._currentUser.next(null);
+        if (error.status && error.status !== 401) {
+          this.handleUnauthorized();
+        }
+      },
+    });
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http
+      .get<User>(`${this.API_BASE}/auth/me`, {
+        withCredentials: true,
+      })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+  login(): void {
+    window.location.href = `${this.API_BASE}/auth/login`;
+  }
+
+  refreshToken(): Observable<any> {
+    return this.http
+      .post(`${this.API_BASE}/auth/refresh`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          console.log('Token refreshed successfully');
+          this._isAuthenticated.next(true);
+        }),
+        catchError((error) => {
+          console.error('Token refresh failed:', error);
+          if (error.status === 401) {
+            this.handleUnauthorized();
+          }
+          return throwError(() => error);
+        })
+      );
+  }
+
+  logout(): void {
+    this.http
+      .post(`${this.API_BASE}/auth/logout`, {}, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          this._isAuthenticated.next(false);
+          this._currentUser.next(null);
+          this.stopTokenRefresh();
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          console.error('Logout error:', error);
+          this._isAuthenticated.next(false);
+          this._currentUser.next(null);
+          this.stopTokenRefresh();
+          this.router.navigate(['/']);
+        },
+      });
+  }
+
+  getCsrfToken(): string | null {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'csrf-token') {
+        return decodeURIComponent(value);
       }
-    })
+    }
+    return null;
   }
 
-  signIn(email: string, password: string) {
-    return from(this.supabase.auth.signInWithPassword({
-      email: email,
-      password: password
-    })).subscribe(response => {
-      if (!response.error) {
-        console.log(response)
-        //
-      } else {
-        console.log('failed login')
-        //
+  private startTokenRefresh(): void {
+    this.stopTokenRefresh();
+
+    this.refreshTimer = setInterval(() => {
+      if (this._isAuthenticated.value) {
+        this.refreshToken().subscribe({
+          error: (error) => {
+            console.error('Auto-refresh failed:', error);
+          },
+        });
       }
-    })
-  } 
-
-  signOut() {
-    return this.supabase.auth.signOut()
+    }, this.REFRESH_INTERVAL);
   }
 
+  private stopTokenRefresh(): void {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined;
+    }
+  }
 
+  private handleUnauthorized(): void {
+    this._isAuthenticated.next(false);
+    this._currentUser.next(null);
+    this.stopTokenRefresh();
+  }
+
+  get isAuthenticated(): boolean {
+    return this._isAuthenticated.value;
+  }
+
+  get currentUser(): User | null {
+    return this._currentUser.value;
+  }
 }

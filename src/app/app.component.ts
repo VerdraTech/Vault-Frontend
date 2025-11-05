@@ -25,16 +25,12 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // this.authService.startSupabase();
-    // this.authService.loggedIn$.subscribe(loggedIn => {
-    //   if (loggedIn) {
-    //     this.loggedIn = true;
-    //     this.router.navigate(['/folder/inbox'])
-    //     //
-    //   } else {
-    //     this.router.navigate(['/login'])
-    //   }
-    // })
+    // Subscribe to auth state
+    this.authService.isAuthenticated$.subscribe(loggedIn => {
+      this.loggedIn = loggedIn;
+      // Don't redirect - let routes handle their own auth requirements
+      // The root path (/) should show landing page regardless of auth status
+    });
   }
 
   // signOut() {

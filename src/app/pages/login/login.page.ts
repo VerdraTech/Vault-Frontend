@@ -1,37 +1,34 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule]
 })
 export class LoginPage implements OnInit {
   private authService = inject(AuthService);
-  private formBuilder = inject(FormBuilder);
-  loginForm: FormGroup = this.buildForm();
+  isLoading = false;
 
   constructor() { }
 
   ngOnInit() {
-  }
-
-  buildForm() {
-    this.loginForm = this.formBuilder.group({
-      userName: ['', [ Validators.required ]],
-      password: ['', [ Validators.required ]]
-    })
-    return this.loginForm
+    // Check if user is already authenticated
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) {
+        // Redirect to home if already authenticated
+        // You can customize this based on your routing
+      }
+    });
   }
 
   handleLogin() {
-    const user = this.loginForm.value.userName;
-    const pw = this.loginForm.value.password;
-    this.authService.signIn(user, pw)
-    this.loginForm.reset()
+    this.isLoading = true;
+    // Redirect to backend OAuth login
+    this.authService.login();
   }
 }

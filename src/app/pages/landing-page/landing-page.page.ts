@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { from, throwError } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-landing-page',
@@ -21,6 +20,8 @@ import { switchMap } from 'rxjs/operators';
   ],
 })
 export class LandingPage {
+  private http = inject(HttpClient);
+
   isModalOpen: boolean = false;
   isSubmitting: boolean = false;
   errorMessage: string = '';
@@ -77,27 +78,21 @@ export class LandingPage {
 
     this.isSubmitting = true;
 
-    from(
-      fetch(`${environment.BASE_URL}/waitlist`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    this.http
+      .post<{
+        status: string;
+        message?: string;
+        name?: string;
+        email?: string;
+      }>(
+        `${environment.BASE_URL}/waitlist`,
+        {
           name: this.formData.name,
           email: this.formData.email,
-        }),
-      })
-    )
-      .pipe(
-        switchMap((res) => {
-          if (res.ok) {
-            return from(res.json());
-          }
-          return from(res.text()).pipe(
-            switchMap((text) =>
-              throwError(() => new Error(text || `HTTP ${res.status}`))
-            )
-          );
-        })
+        },
+        {
+          withCredentials: true,
+        }
       )
       .subscribe({
         next: (result) => {
@@ -115,7 +110,9 @@ export class LandingPage {
         error: (err) => {
           console.error('Error joining waitlist:', err);
           const msg =
-            err?.message || 'Failed to join waitlist. Please try again.';
+            err?.error?.message ||
+            err?.message ||
+            'Failed to join waitlist. Please try again.';
           this.errorMessage = msg;
         },
         complete: () => {
