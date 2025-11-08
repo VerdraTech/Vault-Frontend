@@ -1,0 +1,64 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">shipping</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div style="margin-left: 2rem;">
+    <h1>Shipping</h1>
+    <p>Track and manage order fulfillment</p>
+
+    <ion-segment value="default" class="tab-label">
+      <ion-segment-button value="default">
+        <div class="segment-label">
+          <ion-label>Pending</ion-label>
+          <ion-badge>4</ion-badge>
+        </div>
+      </ion-segment-button>
+      <ion-segment-button value="segment">
+        <div class="segment-label">
+          <ion-label>Completed</ion-label>
+          <ion-badge>3</ion-badge>
+        </div>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div class="shipping-container">
+    <ion-grid>
+      @for (package of packages; track $index) {
+        <div class="shipment-content">
+          <ion-row style="padding: 0 0.5rem 0 0.5rem">
+            <ion-col size="1" class="thumbnail-wrapper">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+              </ion-thumbnail>
+            </ion-col>
+            <ion-col size="7">
+              <div style="display: flex;">
+                <h5 class="product-name">Nike Air Jordan 1 Retro High OG</h5>
+                <p class="shipment-item-size">Size 10.5</p>
+              </div>
+              <div class="item-details">
+                <span>AJ1-BRD-2023</span> •
+                <span>ORD-2024-1001</span> •
+                <span>Sneaker Store NYC</span>
+              </div>
+            </ion-col>
+            <ion-col size="4" class="ion-text-end item-price">
+              <h5 class="price">$285.00</h5>
+              <span class="item-details">10/24/2024</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="1"></ion-col>
+            <ion-col size="11">
+              <app-stepper [status]="package['tracking_status']"></app-stepper>
+            </ion-col>
+          </ion-row>
+        </div>
+      }
+    </ion-grid>
+  </div>
+</ion-content>

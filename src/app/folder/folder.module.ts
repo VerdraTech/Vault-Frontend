@@ -10,6 +10,7 @@ import { FolderPage } from './folder.page';
 
 import { InventoryPage } from '../pages/inventory/inventory.page';
 import { DashboardPage } from '../pages/dashboard/dashboard.page';
+import { ShippingPage } from '../pages/shipping/shipping.page';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { DashboardPage } from '../pages/dashboard/dashboard.page';
     IonicModule,
     FolderPageRoutingModule,
     InventoryPage,
-    DashboardPage
+    DashboardPage,
+    ShippingPage
   ],
   declarations: [FolderPage]
 })
