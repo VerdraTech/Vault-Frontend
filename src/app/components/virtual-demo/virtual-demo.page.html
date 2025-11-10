@@ -1,0 +1,210 @@
+<div
+  class="bg-gradient-to-br from-slate-900 to-slate-600 rounded-3xl overflow-hidden shadow-2xl relative"
+>
+  <div class="absolute inset-0 bg-blue-600/20 opacity-50"></div>
+
+  <div class="aspect-video relative overflow-hidden">
+    <!-- Stage 0: Upload -->
+    <div
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="getStage0Class()"
+    >
+      <div class="flex items-center justify-center h-full p-12">
+        <div class="w-full max-w-3xl">
+          <div
+            class="bg-slate-800/50 rounded-2xl p-8 border-2 border-dashed border-slate-600"
+          >
+            <div class="text-center">
+              <img
+                src="assets/upload.svg"
+                alt="Upload"
+                class="size-12 mx-auto mb-4"
+              />
+              <p class="text-slate-50 text-lg font-semibold">
+                Drop your CSV file here
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 1: Processing -->
+    <div
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="getStageClass(1)"
+    >
+      <div class="flex items-center justify-center h-full p-12">
+        <div class="w-full max-w-3xl">
+          <div
+            class="bg-slate-800/50 rounded-2xl p-8 border-2 border-dashed border-blue-500 animate-pulse-slow"
+          >
+            <div class="text-center">
+              <div
+                class="bg-blue-500/20 rounded-xl p-6 mb-4 inline-block animate-float"
+              >
+                <div class="text-blue-400 text-sm font-semibold">
+                  inventory.csv
+                </div>
+              </div>
+              <p class="text-blue-400 text-lg font-semibold">
+                Processing file...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 2: Dashboard -->
+    <div
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="getStageClass(2)"
+    >
+      <div class="flex items-center justify-center h-full p-12">
+        <div class="w-full max-w-4xl">
+          <div class="bg-slate-800/80 rounded-2xl p-6 backdrop-blur-sm">
+            <div class="mb-4">
+              <h3 class="text-slate-50 text-xl font-semibold mb-2">
+                Inventory Dashboard
+              </h3>
+              <p class="text-slate-50 text-sm">3 SKUs imported successfully</p>
+            </div>
+            <div class="space-y-2">
+              <div
+                *ngFor="let item of inventoryItems; let i = index"
+                class="bg-slate-900/50 rounded-lg p-4 flex justify-between items-center animate-slideUp"
+                [style.animation-delay]="i * 150 + 'ms'"
+              >
+                <div class="flex-1">
+                  <div class="text-slate-50 font-semibold">{{ item.name }}</div>
+                  <div class="text-slate-400 text-sm">
+                    Cost: {{ item.cost }}
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-slate-50 text-sm">Qty: {{ item.qty }}</div>
+                  <div class="text-green-400 font-semibold">
+                    {{ item.profit }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3: Analytics -->
+    <div
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="getStageClass(3)"
+    >
+      <div class="flex items-center justify-center h-full p-12">
+        <div class="w-full max-w-4xl">
+          <div class="bg-slate-800/80 rounded-2xl p-6 backdrop-blur-sm">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <h3 class="text-slate-50 text-xl font-semibold mb-1">
+                  Performance Analytics
+                </h3>
+                <p class="text-slate-400 text-sm">Last 30 days</p>
+              </div>
+              <span class="text-green-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 17l6-6 4 4 8-8"
+                  />
+                </svg>
+              </span>
+            </div>
+            <div class="relative h-40 flex items-end gap-2">
+              <ng-container *ngFor="let height of analyticsBars; let i = index">
+                <div
+                  class="flex-1 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg animate-slideUp relative group"
+                  [style.height]="height + '%'"
+                  [style.animation-delay]="i * 100 + 'ms'"
+                >
+                  <div
+                    *ngIf="i >= 4"
+                    class="absolute -top-1 left-0 right-0 h-1 bg-amber-400 animate-shimmer"
+                  ></div>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-4">
+              <div class="bg-slate-700/50 rounded-lg p-3">
+                <div class="text-slate-400 text-xs mb-1">Revenue</div>
+                <div class="text-slate-50 font-semibold text-lg">$5,040</div>
+              </div>
+              <div class="bg-slate-700/50 rounded-lg p-3">
+                <div class="text-slate-400 text-xs mb-1">Growth</div>
+                <div class="text-green-400 font-semibold text-lg">+28%</div>
+              </div>
+              <div class="bg-slate-700/50 rounded-lg p-3">
+                <div class="text-slate-400 text-xs mb-1">Items Sold</div>
+                <div class="text-slate-50 font-semibold text-lg">195</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 4: Marketplace -->
+    <div
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="getStageClass(4)"
+    >
+      <div class="flex items-center justify-center h-full p-12">
+        <div class="w-full max-w-4xl">
+          <div class="bg-slate-800/80 rounded-2xl p-6 backdrop-blur-sm">
+            <div class="mb-4">
+              <h3 class="text-slate-50 text-xl font-semibold mb-2">
+                Marketplace Listings
+              </h3>
+              <p class="text-slate-400 text-sm">
+                Your products are now optimized
+              </p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div
+                *ngFor="let item of marketplaceItems; let i = index"
+                class="bg-slate-700/50 rounded-lg p-4 animate-slideUp relative overflow-hidden"
+                [style.animation-delay]="i * 200 + 'ms'"
+              >
+                <div class="h-36 bg-white rounded-lg mb-3 overflow-hidden">
+                  <img
+                    [src]="item.image"
+                    [alt]="item.name"
+                    class="size-full object-contain"
+                  />
+                </div>
+                <div class="text-slate-50 font-semibold mb-1">
+                  {{ item.name }}
+                </div>
+                <div class="text-green-400 font-semibold text-lg mb-2">
+                  {{ item.price }}
+                </div>
+                <div
+                  class="text-xs text-blue-400 bg-blue-500/20 rounded px-2 py-1 inline-block"
+                >
+                  {{ item.status }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
