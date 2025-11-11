@@ -41,14 +41,14 @@ a {
 }
 
 .circle.completed {
-  background: #2196f3;
-  border-color: #2196f3;
+  background: #d97706; // blue #2196f3
+  border-color: #d97706;
   color: #fff;
 }
 
 .circle.active {
-  background: #2196f3;
-  border-color: #2196f3;
+  background: #d97706;
+  border-color: #d97706;
   color: #fff;
 }
 
@@ -66,7 +66,7 @@ a {
 }
 
 .divider.completed {
-  background: #2196f3;
+  background: #d97706;
 }
 
 .package-destination {

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonicModule, IonModal } from '@ionic/angular';
 import { StepperComponent } from 'src/app/components/stepper/stepper.component';
+import type { OverlayEventDetail } from '@ionic/core';
 
 @Component({
   selector: 'app-shipping',
@@ -75,9 +76,24 @@ export class ShippingPage implements OnInit {
     }
   ]
 
+  @ViewChild(IonModal) modal!: IonModal;
+  
   constructor() { }
 
   ngOnInit() {
   }
 
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    this.modal.dismiss('', 'confirm');
+  }
+
+  onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
+    if (event.detail.role === 'confirm') {
+      
+    }
+  }
 }

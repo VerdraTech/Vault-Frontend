@@ -9,7 +9,8 @@
     <h1>Shipping</h1>
     <p>Track and manage order fulfillment</p>
 
-    <ion-segment value="default" class="tab-label">
+    <div style="display: flex;">
+      <ion-segment value="default" class="tab-label">
       <ion-segment-button value="default">
         <div class="segment-label">
           <ion-label>Pending</ion-label>
@@ -23,6 +24,8 @@
         </div>
       </ion-segment-button>
     </ion-segment>
+    <ion-button style="margin-right: 1.75rem;" id="open-modal" expand="block">Add Shipment</ion-button>
+    </div>
   </div>
 
   <div class="shipping-container">
@@ -61,4 +64,38 @@
       }
     </ion-grid>
   </div>
+
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Track Shipment</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+          <ion-input
+            label="Tracking number"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="1Z999AA10123456784"
+            
+          ></ion-input>
+     
+          <ion-input
+            label="Carrier name"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="USPS"
+            
+          ></ion-input>
+       
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
