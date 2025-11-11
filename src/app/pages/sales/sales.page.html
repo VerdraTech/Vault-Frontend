@@ -1,0 +1,112 @@
+<ion-content [fullscreen]="true" [scrollX]="true">
+  <ion-grid style="margin-bottom: 2rem;">
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+      </ion-col>
+      <ion-col style="display: flex; justify-content: flex-end; margin-right: 1.25rem;">
+        <ion-segment value="pending" class="merged-segment">
+          <ion-segment-button value="pending" (click)="change('pending')">
+            <ion-label>Pending</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="completed" (click)="change('completed')">
+            <ion-label>Completed</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  @if (viewType === 'pending') {
+    <table >
+      <thead>
+        <tr>
+          <th style="width: 5%" class="table-cell">Product</th>
+          <th style="width: 20%" class="table-cell"></th>
+          <th style="width: 15%" class="table-cell">Size</th>
+          <th style="width: 15%" class="table-cell">Price Sold</th>
+          <th style="width: 15%" class="table-cell">Profit</th>
+          <th style="width: 20%" class="table-cell">Date Sold</th>
+          <th style="width: 15%" class="table-cell">Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (itemsArray of queriedInventory; track $index; let i = $index) {
+          <tr>
+            <td class="table-cell">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+            </td>
+            <td class="table-cell">
+              {{ itemsArray[0].name }}
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].size }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >$429.74</div> <!-- sold price -->
+            </td>
+            <td class="table-cell" >
+              <div>$116.99</div> <!-- add calculations for profit -->
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].dateSold }}</div>
+            </td>
+            <td class="table-cell" >
+              <div>Urban Kicks</div> <!-- client -->
+            </td>
+          </tr>
+        } @empty {
+          <p>There are no items</p>
+        }
+      </tbody>
+    </table>
+  } @else if (viewType === 'completed') {
+    <table >
+      <thead>
+        <tr>
+          <th style="width: 5%" class="table-cell">Product</th>
+          <th style="width: 20%" class="table-cell"></th>
+          <th style="width: 15%" class="table-cell">Size</th>
+          <th style="width: 15%" class="table-cell">Price Sold</th>
+          <th style="width: 15%" class="table-cell">Profit</th>
+          <th style="width: 20%" class="table-cell">Date Sold</th>
+          <th style="width: 15%" class="table-cell">Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (itemsArray of queriedInventory; track $index; let i = $index) {
+          <tr>
+            <td class="table-cell">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+            </td>
+            <td class="table-cell">
+              {{ itemsArray[0].name }}
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].size }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >$429.74</div> <!-- sold price -->
+            </td>
+            <td class="table-cell" >
+              <div>$116.99</div> <!-- add calculations for profit -->
+            </td>
+            <td class="table-cell" >
+              <div >{{ itemsArray[0].dateSold }}</div>
+            </td>
+            <td class="table-cell" >
+              <div>Urban Kicks</div> <!-- client -->
+            </td>
+          </tr>
+        } @empty {
+          <p>There are no items</p>
+        }
+      </tbody>
+    </table>
+  }
+</ion-content>
+
+

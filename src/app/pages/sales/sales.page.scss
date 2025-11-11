@@ -1,0 +1,105 @@
+th {
+  text-align: left;
+}
+
+ion-grid {
+  margin-left: 1rem;
+}
+
+table {
+  margin: 0 2rem 3rem 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  border-collapse: separate;
+  background-color: #FFFF;
+  font-weight: 500;
+}
+
+td, th {
+  border-bottom: 2px solid #f5f6fa;
+}
+
+tr:hover {
+  box-shadow: 5px 0 10px grey;
+}
+
+ion-badge {
+  margin-right: 0.25rem;
+}
+
+.table-cell {
+  padding: 1rem 1rem;
+}
+
+.item-name {
+  color: #FFB454;
+}
+
+.item-sku {
+  color: #59C2FF;
+}
+
+.action-menu-td {
+  padding: 1rem 1rem;
+}
+
+.badge-container {
+  padding-left: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.merged-segment {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #d6d9e5;
+  // width: fit-content;
+}
+
+.merged-segment ion-segment-button {
+  --background: #FFFF;
+  --border-radius: 0;
+  --indicator-box-shadow: none;
+  border: none;
+  border-right: 1px solid var(--ion-color-medium);
+  flex: 1;
+  transition: all 0.2s ease;
+  --background-checked: var(--ion-color-primary);
+}
+
+ion-segment-button ion-label {
+  color: var(--ion-color-primary)
+}
+
+ion-segment-button.segment-button-checked ion-label {
+  color: #FFFF;
+}
+
+.merged-segment ion-segment-button:last-child {
+  border-right: none;
+}
+
+.merged-segment ion-segment-button:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.merged-segment ion-segment-button:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  table {
+    border: 1px solid hsl(208, 31%, 23%);
+    background-color: hsl(209, 21%, 19%); // rgb(39, 50, 60)
+  }
+  td, th {
+    border-bottom: 2px solid hsl(208, 31%, 23%);
+  }
+  tr:hover {
+    box-shadow: none;
+    background-color: hsl(208, 31%, 23%); // rgb(41, 60, 77) menu color in light mode
+  }
+}
+
