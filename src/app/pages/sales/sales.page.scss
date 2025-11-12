@@ -1,0 +1,93 @@
+th {
+  text-align: left;
+}
+
+ion-grid {
+  margin-left: 1rem;
+}
+
+table {
+  margin: 0 2rem 3rem 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  border-collapse: separate;
+  background-color: #FFFF;
+  font-weight: 500;
+}
+
+td, th {
+  border-bottom: 2px solid #f5f6fa;
+}
+
+tr:hover {
+  box-shadow: 5px 0 10px grey;
+}
+
+ion-badge {
+  margin-right: 0.25rem;
+}
+
+.table-cell {
+  padding: 1rem 1rem;
+}
+
+.item-name {
+  color: #FFB454;
+}
+
+.item-sku {
+  color: #59C2FF;
+}
+
+.action-menu-td {
+  padding: 1rem 1rem;
+}
+
+.badge-container {
+  padding-left: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.segment-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-label {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.gain {
+  display: inline-block;
+  border: 1px solid #F1FDF4;
+  border-radius: 5px;
+  background: #F1FDF4;
+  color: #33AB5E;
+  font-weight: 500;
+}
+
+.loss {
+  display: inline-block;
+  border: 1px solid #FFE6E3;
+  border-radius: 5px;
+  background: #FFE6E3;
+  color: #B1402D;
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  table {
+    border: 1px solid hsl(208, 31%, 23%);
+    background-color: hsl(209, 21%, 19%); // rgb(39, 50, 60)
+  }
+  td, th {
+    border-bottom: 2px solid hsl(208, 31%, 23%);
+  }
+  tr:hover {
+    box-shadow: none;
+    background-color: hsl(208, 31%, 23%); // rgb(41, 60, 77) menu color in light mode
+  }
+}
+

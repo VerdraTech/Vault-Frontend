@@ -10,6 +10,7 @@ import { FolderPage } from './folder.page';
 
 import { InventoryPage } from '../pages/inventory/inventory.page';
 import { DashboardPage } from '../pages/dashboard/dashboard.page';
+import { SalesPage } from '../pages/sales/sales.page';
 import { ShippingPage } from '../pages/shipping/shipping.page';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { ShippingPage } from '../pages/shipping/shipping.page';
     FolderPageRoutingModule,
     InventoryPage,
     DashboardPage,
+    SalesPage,
     ShippingPage
   ],
   declarations: [FolderPage]
