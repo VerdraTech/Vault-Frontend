@@ -29,4 +29,9 @@
       <app-sales></app-sales>
     </ion-content>
   }
+  @if (folder === "shipping") {
+    <ion-content [fullscreen]="true">
+      <app-shipping></app-shipping>
+    </ion-content>
+  }
 </ion-content>
