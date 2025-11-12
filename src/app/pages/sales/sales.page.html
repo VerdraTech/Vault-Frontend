@@ -1,15 +1,19 @@
 <ion-content [fullscreen]="true" [scrollX]="true">
-  <ion-grid style="margin-bottom: 2rem;">
+  <ion-grid style="margin-bottom: 1.5rem; margin-top: 1.5rem">
     <ion-row class="ion-align-items-center">
-      <ion-col>
-      </ion-col>
-      <ion-col style="display: flex; justify-content: flex-end; margin-right: 1.25rem;">
-        <ion-segment value="pending" class="merged-segment">
-          <ion-segment-button value="pending" (click)="change('pending')">
-            <ion-label>Pending</ion-label>
+      <ion-col style="display: flex;">
+        <ion-segment value="default" class="tab-label">
+          <ion-segment-button value="default">
+            <div class="segment-label">
+              <ion-label>Pending</ion-label>
+              <ion-badge>4</ion-badge>
+            </div>
           </ion-segment-button>
-          <ion-segment-button value="completed" (click)="change('completed')">
-            <ion-label>Completed</ion-label>
+          <ion-segment-button value="segment">
+            <div class="segment-label">
+              <ion-label>Completed</ion-label>
+              <ion-badge>3</ion-badge>
+            </div>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -47,7 +51,7 @@
               <div >$429.74</div> <!-- sold price -->
             </td>
             <td class="table-cell" >
-              <div>$116.99</div> <!-- add calculations for profit -->
+              <div class="gain">$116.99</div> <!-- add calculations for profit -->
             </td>
             <td class="table-cell" >
               <div >{{ itemsArray[0].dateSold }}</div>
