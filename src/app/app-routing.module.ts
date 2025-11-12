@@ -9,7 +9,7 @@ const routes: Routes = [
   // },
   {
     path: '',
-    redirectTo: 'folder/inbox',
+    redirectTo: 'folder/dashboard',
     pathMatch: 'full'
   },
   {
