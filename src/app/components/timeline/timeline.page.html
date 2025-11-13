@@ -1,0 +1,54 @@
+<div class="relative">
+  <!-- Connecting line -->
+  <div
+    class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-amber-500 to-blue-500 opacity-20 hidden lg:block"
+  ></div>
+
+  <div class="space-y-8">
+    <div
+      *ngFor="let step of steps; let i = index"
+      class="flex flex-col lg:flex-row items-center gap-8"
+      [ngClass]="isEven(i) ? 'lg:flex-row' : 'lg:flex-row-reverse'"
+    >
+      <!-- Content Card -->
+      <div class="flex-1 w-full lg:w-auto">
+        <div
+          class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/10 hover:bg-white/10 transition-all hover:scale-105 group"
+          [ngClass]="isEven(i) ? 'lg:text-right' : 'lg:text-left'"
+        >
+          <div
+            class="flex items-start gap-4"
+            [ngClass]="isEven(i) ? 'lg:flex-row-reverse' : 'lg:flex-row'"
+          >
+            <div class="flex-1">
+              <div
+                class="text-sm font-semibold uppercase tracking-wider sm:mb-2"
+                class="text-blue-400"
+              >
+                STEP {{ step.number }}
+              </div>
+              <h3 class="text-xl sm:text-2xl font-semibold text-white mb-3">
+                {{ step.title }}
+              </h3>
+              <p class="text-slate-300 leading-relaxed font-normal">
+                {{ step.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Icon -->
+      <div class="relative flex-shrink-0 hidden sm:block">
+        <div
+          class="bg-slate-600 size-20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform relative z-10 text-4xl shadow-md"
+        >
+          <img src="{{ step.icon }}" alt="{{ step.title }}" class="size-12" />
+        </div>
+      </div>
+
+      <!-- Spacer for alignment -->
+      <div class="flex-1 w-full lg:w-auto hidden lg:block"></div>
+    </div>
+  </div>
+</div>
