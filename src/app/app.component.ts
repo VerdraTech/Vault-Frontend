@@ -39,6 +39,16 @@ export class AppComponent implements OnInit {
       this.loggedIn = isLoggedIn;
     });
 
+    // Fetch CSRF token first (required for API requests)
+    this.authService.fetchCsrfToken().subscribe({
+      next: (token) => {
+        console.log('CSRF token fetched:', token ? 'success' : 'failed');
+      },
+      error: (error) => {
+        console.error('Failed to fetch CSRF token:', error);
+      },
+    });
+
     // First, check what cookies are available (debug)
     this.http
       .get<any>(`${this.envService.apiUrl}/auth/debug/cookies`, {
@@ -54,6 +64,7 @@ export class AppComponent implements OnInit {
       });
 
     // Then try to get user info - the interceptor will handle token refresh automatically
+    // Don't manually set loggedIn=false here - let the interceptor handle it
     this.http
       .get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true })
       .subscribe({
@@ -63,13 +74,14 @@ export class AppComponent implements OnInit {
           this.authService.setLoggedIn(true);
         },
         error: (error) => {
-          // If we get a 401 here, it means refresh also failed or no refresh token exists
+          // The interceptor will handle 401 errors and attempt refresh
+          // Only log here, don't manually set loggedIn state
           if (error.status === 401) {
-            console.log('User not authenticated');
+            console.log(
+              'Authentication check failed - interceptor should have handled refresh'
+            );
             console.log('Error details:', error.error?.detail || error.message);
-            this.authService.setLoggedIn(false);
-            // Optionally redirect to login page
-            // window.location.href = `${this.envService.apiUrl}/auth/login`;
+            // Don't set loggedIn=false here - interceptor already handled it
           } else {
             console.error('Error checking authentication:', error);
           }

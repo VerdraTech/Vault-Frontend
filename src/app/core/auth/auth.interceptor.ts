@@ -26,19 +26,29 @@ export class AuthInterceptor implements HttpInterceptor {
     let clonedRequest = request;
     if (!request.url.startsWith('http://localhost:4000/api/supabase')) {
       // Only add credentials for our API calls, not external APIs
+      const headers: { [key: string]: string } = {};
+
+      // Add CSRF token header for all API requests (backend only enforces for non-GET)
+      // Include it for all requests to ensure it's available when needed
+      const csrfToken = this.authService.getCsrfToken();
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken;
+      }
+
       clonedRequest = request.clone({
         withCredentials: true,
+        setHeaders: headers,
       });
     }
 
     return next.handle(clonedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
         // Only handle 401 errors (unauthorized) and exclude refresh/login endpoints
+        // Note: /auth/debug is NOT excluded so it can trigger refresh if needed
         const isAuthEndpoint =
           request.url.includes('/auth/refresh') ||
           request.url.includes('/auth/login') ||
-          request.url.includes('/auth/authorize') ||
-          request.url.includes('/auth/debug');
+          request.url.includes('/auth/authorize');
 
         if (error.status === 401 && !isAuthEndpoint) {
           // If we're not already refreshing, try to refresh the token
@@ -77,6 +87,34 @@ export class AuthInterceptor implements HttpInterceptor {
               })
             );
           }
+        }
+
+        // Handle CSRF errors (403) - try to fetch new CSRF token
+        if (
+          error.status === 403 &&
+          error.error?.detail === 'CSRF check failed'
+        ) {
+          console.warn('CSRF check failed, fetching new CSRF token...');
+          // Fetch new CSRF token and retry the request
+          return this.authService.fetchCsrfToken().pipe(
+            switchMap(() => {
+              // Retry the request with new CSRF token
+              const csrfToken = this.authService.getCsrfToken();
+              const retryHeaders: { [key: string]: string } = {};
+              if (csrfToken) {
+                retryHeaders['x-csrf-token'] = csrfToken;
+              }
+              const retryRequest = request.clone({
+                withCredentials: true,
+                setHeaders: retryHeaders,
+              });
+              return next.handle(retryRequest);
+            }),
+            catchError((retryError) => {
+              console.error('Retry after CSRF token fetch failed:', retryError);
+              return throwError(() => retryError);
+            })
+          );
         }
 
         // For non-401 errors or auth endpoints, just pass through

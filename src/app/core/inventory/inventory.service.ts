@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Item, Items } from 'src/app/model/item';
 import mockInventory from 'src/app/mock-data/mock-inventory';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, filter, take, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { EnvResolverService } from '../env-resolver/env-resolver.service';
 
@@ -18,17 +18,29 @@ export class InventoryService {
   constructor() {}
 
   getUserInventory(): Observable<{ items: Items[]; total: number }> {
-    return this.http
-      .get<any>(
-        `${this.inventoryURL}/user/${this.authService.currentUser}?page=1&size=100`,
-        { withCredentials: true }
-      )
-      .pipe(
-        map((response) => {
-          let items = this.groupBySku(response.items);
-          return { items: items, total: response.total };
-        })
-      );
+    // Wait for user to be authenticated and currentUser to be set
+    // Check both loggedIn status and currentUser availability
+    return this.authService.loggedIn$.pipe(
+      filter((isLoggedIn) => {
+        // Only proceed if logged in AND currentUser is set
+        return isLoggedIn && !!this.authService.currentUser;
+      }),
+      take(1),
+      switchMap(() => {
+        const userId = this.authService.currentUser;
+        if (!userId) {
+          throw new Error('User ID not available');
+        }
+        return this.http.get<any>(
+          `${this.inventoryURL}/user/${userId}?page=1&size=100`,
+          { withCredentials: true }
+        );
+      }),
+      map((response) => {
+        let items = this.groupBySku(response.items);
+        return { items: items, total: response.total };
+      })
+    );
   }
 
   getFilteredUserInventory(
@@ -36,27 +48,38 @@ export class InventoryService {
     page = 1,
     size = 25
   ): Observable<{ items: Items[]; total: number }> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    // Wait for user to be authenticated and currentUser to be set
+    return this.authService.loggedIn$.pipe(
+      filter((isLoggedIn) => {
+        // Only proceed if logged in AND currentUser is set
+        return isLoggedIn && !!this.authService.currentUser;
+      }),
+      take(1),
+      switchMap(() => {
+        const userId = this.authService.currentUser;
+        if (!userId) {
+          throw new Error('User ID not available');
+        }
+        let params = new HttpParams()
+          .set('page', page.toString())
+          .set('size', size.toString());
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        const snakeCaseKey = this.filterMapper(key);
-        params = params.set(snakeCaseKey, value.toString());
-      }
-    });
-    return this.http
-      .get<any>(`${this.inventoryURL}/user/${this.authService.currentUser}`, {
-        params,
-        withCredentials: true,
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== '') {
+            const snakeCaseKey = this.filterMapper(key);
+            params = params.set(snakeCaseKey, value.toString());
+          }
+        });
+        return this.http.get<any>(`${this.inventoryURL}/user/${userId}`, {
+          params,
+          withCredentials: true,
+        });
+      }),
+      map((response) => {
+        let items = this.groupBySku(response);
+        return { items: items, total: response.total };
       })
-      .pipe(
-        map((response) => {
-          let items = this.groupBySku(response);
-          return { items: items, total: response.total };
-        })
-      );
+    );
   }
 
   getAllInventory() {
@@ -104,26 +127,62 @@ export class InventoryService {
   }
 
   addItem(quantity: number, data: any) {
-    // add item to inventory
-    const headers = new HttpHeaders({
-      'X-CSRF-Token': '',
-    });
+    // Ensure CSRF token is available before making the request
+    // The interceptor will add it automatically, but we need to make sure it's fetched
+    if (!this.authService.getCsrfToken()) {
+      console.warn('CSRF token not available, fetching...');
+      this.authService.fetchCsrfToken().subscribe();
+    }
+
+    // Build request body according to InventoryCreate schema
+    // Backend expects: name (required), sku (optional), size (required), condition (required),
+    // acquisition_cost (optional), location (optional), listed (optional, defaults to false)
+    const requestBody: any = {
+      name: data.name, // Required - product name
+      size: data.size, // Required - shoe size
+      condition: data.condition, // Required - condition (new, used, etc.)
+    };
+
+    // Optional fields
+    if (data.sku) {
+      requestBody.sku = data.sku; // Optional - SKU (will be auto-populated if not provided)
+    }
+    if (data.acquisitionCost !== null && data.acquisitionCost !== undefined) {
+      requestBody.acquisition_cost = Number(data.acquisitionCost);
+    } else if (data.price !== null && data.price !== undefined) {
+      requestBody.acquisition_cost = Number(data.price);
+    }
+    if (data.location) {
+      requestBody.location = data.location;
+    }
+    if (data.listed !== null && data.listed !== undefined) {
+      requestBody.listed = Boolean(data.listed);
+    }
+
     return this.http
-      .post<any>(
-        this.inventoryURL,
-        {
-          user_id: this.authService.currentUser,
-          item_id: 'f1a4b893-0984-429d-aa3f-73827fe2de87', // update after SKU change
-          size: data.size,
-          condition: data.condition,
-          acquisition_cost: data.acquisitionCost,
-          location: data.location,
+      .post<any>(this.inventoryURL, requestBody, { withCredentials: true })
+      .subscribe({
+        next: (response) => {
+          console.log('ADD', response);
+          return response;
         },
-        { withCredentials: true }
-      )
-      .subscribe((response) => {
-        console.log('ADD', response);
-        return response;
+        error: (error) => {
+          console.error('Error adding item:', error);
+          // Log validation errors for debugging
+          if (error.status === 422 && error.error?.detail) {
+            console.error('Validation errors:', error.error.detail);
+          }
+          // If CSRF error, try to fetch token and retry
+          if (
+            error.status === 403 &&
+            error.error?.detail === 'CSRF check failed'
+          ) {
+            console.log('CSRF error detected, fetching new token...');
+            this.authService.fetchCsrfToken().subscribe(() => {
+              console.log('CSRF token refreshed, please try again');
+            });
+          }
+        },
       });
   }
 
