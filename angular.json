@@ -72,12 +72,24 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "localhost",
+            "port": 8100
+          },
           "configurations": {
             "production": {
               "buildTarget": "app:build:production"
             },
             "development": {
               "buildTarget": "app:build:development"
+            },
+            "https": {
+              "buildTarget": "app:build:development",
+              "ssl": true,
+              "sslCert": "../Vault-Backend/src/certs/cert.pem",
+              "sslKey": "../Vault-Backend/src/certs/key.pem",
+              "host": "localhost",
+              "port": 8100
             },
             "ci": {
               "progress": false
@@ -124,19 +136,14 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ]
+    "schematicCollections": ["@ionic/angular-toolkit"]
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
