@@ -8,9 +8,9 @@ import { Item } from 'src/app/model/item';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule]
+  imports: [IonicModule, ReactiveFormsModule],
 })
-export class ModalComponent  implements OnInit {
+export class ModalComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
 
   @Input() action!: string;
@@ -27,8 +27,8 @@ export class ModalComponent  implements OnInit {
     dateSold: [null as null | string],
     location: [''],
     quantity: [{ value: 1, disabled: true }],
-    condition: ['', Validators.required]
-  })
+    condition: ['', Validators.required],
+  });
 
   sizeOptions = [
     'N/A',
@@ -47,10 +47,10 @@ export class ModalComponent  implements OnInit {
     'M',
     'L',
     'XL',
-    'XXL'
-  ]
+    'XXL',
+  ];
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
   ngOnInit() {
     if (this.action === 'Edit') {
@@ -62,35 +62,37 @@ export class ModalComponent  implements OnInit {
         datePurchased: this.itemData.item['purchaseDate'],
         dateSold: this.itemData.item['sellDate'],
         location: this.itemData['location'],
-        condition: this.itemData['condition']
-      })
-      this.itemForm.controls['name'].disable()
-      this.itemForm.controls['sku'].disable()
+        condition: this.itemData['condition'],
+      });
     }
   }
 
   cancel() {
-    return this.modalController.dismiss(null, 'Cancel')
+    return this.modalController.dismiss(null, 'Cancel');
   }
 
   confirm() {
     if (this.itemForm.valid && this.itemForm.dirty) {
-      return this.modalController.dismiss(this.itemForm.getRawValue(), this.action)
+      console.log('in here', this.itemForm.getRawValue());
+      return this.modalController.dismiss(
+        this.itemForm.getRawValue(),
+        this.action
+      );
     } else if (this.itemForm.pristine) {
-      return this.modalController.dismiss(null, 'Cancel')
+      return this.modalController.dismiss(null, 'Cancel');
     }
-    return this.modalController.dismiss(null, 'Cancel')
+    return this.modalController.dismiss(null, 'Cancel');
   }
 
   toggleCheckbox() {
-    const quantity = this.itemForm.controls['quantity']
+    const quantity = this.itemForm.controls['quantity'];
     this.addSingleItem = !this.addSingleItem;
 
     if (!this.addSingleItem) {
-      quantity.enable()
+      quantity.enable();
     } else {
-      quantity.setValue(1)
-      quantity.disable()
+      quantity.setValue(1);
+      quantity.disable();
     }
   }
 }

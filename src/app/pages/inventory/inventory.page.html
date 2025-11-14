@@ -136,10 +136,16 @@
           <div>{{ itemsArray[0].item['sku'] }}</div>
         </td>
         <td class="table-cell">
-          <div>{{ itemsArray[0].item['purchaseDate'] }}</div>
+          <div>
+            {{ itemsArray[0].item['purchaseDate'] ?
+            (itemsArray[0].item['purchaseDate'] | date:'MMM d, y') : '-' }}
+          </div>
         </td>
         <td class="table-cell">
-          <div>{{ itemsArray[0].item['sellDate'] }}</div>
+          <div>
+            {{ itemsArray[0].item['sellDate'] ? (itemsArray[0].item['sellDate']
+            | date:'MMM d, y') : '-' }}
+          </div>
         </td>
         <td class="table-cell">
           <div>{{ itemsArray[0].location }}</div>
@@ -150,9 +156,6 @@
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
             <ion-fab-list side="start">
-              <!--<ion-fab-button (click)="cloneItem(i, itemsArray[0])">
-                    <ion-icon name="duplicate"></ion-icon>
-                  </ion-fab-button>-->
               <ion-fab-button (click)="presentAlert(itemsArray[0])">
                 <ion-icon name="trash"></ion-icon>
               </ion-fab-button>
@@ -173,8 +176,14 @@
         <td class="table-cell">{{ item['acquisitionCost'] }}</td>
         <td class="table-cell">{{ item.size }}</td>
         <td class="table-cell">{{ item.item['sku'] }}</td>
-        <td class="table-cell">{{ item.item['purchaseDate'] }}</td>
-        <td class="table-cell">{{ item.item['sellDate'] }}</td>
+        <td class="table-cell">
+          {{ item.item['purchaseDate'] ? (item.item['purchaseDate'] | date:'MMM
+          d, y') : '-' }}
+        </td>
+        <td class="table-cell">
+          {{ item.item['sellDate'] ? (item.item['sellDate'] | date:'MMM d, y') :
+          '-' }}
+        </td>
         <td class="table-cell">{{ item.location }}</td>
         <td class="action-menu-td">
           <ion-fab style="position: relative">
