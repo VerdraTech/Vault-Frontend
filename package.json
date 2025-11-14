@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:https": "ng serve --ssl --ssl-cert /Users/mkli/Documents/Vault/Vault-Backend/src/certs/cert.pem --ssl-key /Users/mkli/Documents/Vault/Vault-Backend/src/certs/key.pem --host localhost --port 8100",
     "start-server": "node server/server.js",
     "build": "ng build",
     "build:prod": "ng build --configuration production",

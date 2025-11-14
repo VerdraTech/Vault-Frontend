@@ -26,18 +26,54 @@ export class AppComponent implements OnInit {
   private authService = inject(AuthService);
   private http = inject(HttpClient);
   private envService = inject(EnvResolverService);
-  loggedIn = true;
+  loggedIn = false;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     console.log('Start App');
-    console.log(this.envService.apiUrl);
+    console.log('API URL:', this.envService.apiUrl);
+
+    // Subscribe to auth state changes
+    this.authService.loggedIn$.subscribe((isLoggedIn) => {
+      this.loggedIn = isLoggedIn;
+    });
+
+    // First, check what cookies are available (debug)
+    this.http
+      .get<any>(`${this.envService.apiUrl}/auth/debug/cookies`, {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (debugInfo) => {
+          console.log('Cookie Debug Info:', debugInfo);
+        },
+        error: (error) => {
+          console.error('Debug endpoint error:', error);
+        },
+      });
+
+    // Then try to get user info - the interceptor will handle token refresh automatically
     this.http
       .get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true })
-      .subscribe((response) => {
-        console.log(response.id);
-        this.authService.setUser(response.id);
+      .subscribe({
+        next: (response) => {
+          console.log('User authenticated:', response.id);
+          this.authService.setUser(response.id);
+          this.authService.setLoggedIn(true);
+        },
+        error: (error) => {
+          // If we get a 401 here, it means refresh also failed or no refresh token exists
+          if (error.status === 401) {
+            console.log('User not authenticated');
+            console.log('Error details:', error.error?.detail || error.message);
+            this.authService.setLoggedIn(false);
+            // Optionally redirect to login page
+            // window.location.href = `${this.envService.apiUrl}/auth/login`;
+          } else {
+            console.error('Error checking authentication:', error);
+          }
+        },
       });
   }
 }
