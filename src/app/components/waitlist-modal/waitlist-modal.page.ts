@@ -92,7 +92,7 @@ export class WaitlistModalComponent implements OnInit, OnDestroy, OnChanges {
         message?: string;
         name?: string;
         email?: string;
-      }>(`${environment.BASE_URL}/waitlist`, this.waitlistForm.value, {
+      }>(`${environment.apiUrl}/waitlist`, this.waitlistForm.value, {
         withCredentials: true,
       })
       .subscribe({
