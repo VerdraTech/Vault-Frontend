@@ -140,7 +140,8 @@
         <ion-checkbox
           labelPlacement="end"
           color="medium"
-          (click)="toggleCheckbox()"
+          [checked]="!addSingleItem"
+          (ionChange)="toggleCheckbox()"
           >Bulk Add</ion-checkbox
         >
       </ion-col>
@@ -149,7 +150,10 @@
           labelPlacement="stacked"
           label="Quantity"
           placeholder="1"
+          type="number"
+          min="1"
           formControlName="quantity"
+          [disabled]="addSingleItem"
         ></ion-input>
       </ion-col>
     </ion-row>

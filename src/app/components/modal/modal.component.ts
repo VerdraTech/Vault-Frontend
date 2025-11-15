@@ -26,7 +26,10 @@ export class ModalComponent implements OnInit {
     datePurchased: [null as null | string],
     dateSold: [null as null | string],
     location: [''],
-    quantity: [{ value: 1, disabled: true }],
+    quantity: [
+      { value: 1, disabled: true },
+      [Validators.required, Validators.min(1)],
+    ],
     condition: ['', Validators.required],
   });
 
@@ -73,11 +76,16 @@ export class ModalComponent implements OnInit {
 
   confirm() {
     if (this.itemForm.valid && this.itemForm.dirty) {
-      console.log('in here', this.itemForm.getRawValue());
-      return this.modalController.dismiss(
-        this.itemForm.getRawValue(),
-        this.action
-      );
+      const formValue = this.itemForm.getRawValue();
+      // Ensure quantity is set correctly
+      if (this.addSingleItem) {
+        formValue.quantity = 1;
+      } else {
+        // Ensure quantity is at least 1 for bulk add
+        formValue.quantity = Math.max(1, Number(formValue.quantity) || 1);
+      }
+      console.log('in here', formValue);
+      return this.modalController.dismiss(formValue, this.action);
     } else if (this.itemForm.pristine) {
       return this.modalController.dismiss(null, 'Cancel');
     }
@@ -89,8 +97,14 @@ export class ModalComponent implements OnInit {
     this.addSingleItem = !this.addSingleItem;
 
     if (!this.addSingleItem) {
+      // Bulk add enabled - enable quantity field
       quantity.enable();
+      // Set default quantity to 1 if it's currently 1 or invalid
+      if (!quantity.value || quantity.value < 1) {
+        quantity.setValue(1);
+      }
     } else {
+      // Single item mode - disable quantity field and reset to 1
       quantity.setValue(1);
       quantity.disable();
     }

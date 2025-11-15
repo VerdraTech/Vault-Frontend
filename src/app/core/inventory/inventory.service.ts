@@ -10,6 +10,7 @@ import {
   switchMap,
   BehaviorSubject,
   tap,
+  forkJoin,
 } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { EnvResolverService } from '../env-resolver/env-resolver.service';
@@ -320,64 +321,88 @@ export class InventoryService {
       this.authService.fetchCsrfToken().subscribe();
     }
 
+    // Ensure quantity is valid (at least 1)
+    const itemQuantity = Math.max(1, Number(quantity) || 1);
+
     // Build request body according to InventoryCreate schema
     // Backend expects: name (required), sku (optional), size (required), condition (required),
     // acquisition_cost (optional), location (optional), listed (optional, defaults to false)
-    const requestBody: any = {
-      name: data.name, // Required - product name
-      size: data.size, // Required - shoe size
-      condition: data.condition, // Required - condition (new, used, etc.)
+    const buildRequestBody = (): any => {
+      const requestBody: any = {
+        name: data.name, // Required - product name
+        size: data.size, // Required - shoe size
+        condition: data.condition, // Required - condition (new, used, etc.)
+      };
+
+      // Optional fields
+      if (data.sku) {
+        requestBody.sku = data.sku; // Optional - SKU (will be auto-populated if not provided)
+      }
+      if (data.acquisitionCost !== null && data.acquisitionCost !== undefined) {
+        requestBody.acquisition_cost = Number(data.acquisitionCost);
+      } else if (data.price !== null && data.price !== undefined) {
+        requestBody.acquisition_cost = Number(data.price);
+      }
+      if (data.location) {
+        requestBody.location = data.location;
+      }
+      if (data.listed !== null && data.listed !== undefined) {
+        requestBody.listed = Boolean(data.listed);
+      }
+      // Handle dates - convert empty strings to null
+      if (
+        data.datePurchased !== null &&
+        data.datePurchased !== undefined &&
+        data.datePurchased !== ''
+      ) {
+        requestBody.purchase_date = data.datePurchased;
+      } else {
+        requestBody.purchase_date = null;
+      }
+      if (
+        data.dateSold !== null &&
+        data.dateSold !== undefined &&
+        data.dateSold !== ''
+      ) {
+        requestBody.sell_date = data.dateSold;
+      } else {
+        requestBody.sell_date = null;
+      }
+      return requestBody;
     };
 
-    // Optional fields
-    if (data.sku) {
-      requestBody.sku = data.sku; // Optional - SKU (will be auto-populated if not provided)
-    }
-    if (data.acquisitionCost !== null && data.acquisitionCost !== undefined) {
-      requestBody.acquisition_cost = Number(data.acquisitionCost);
-    } else if (data.price !== null && data.price !== undefined) {
-      requestBody.acquisition_cost = Number(data.price);
-    }
-    if (data.location) {
-      requestBody.location = data.location;
-    }
-    if (data.listed !== null && data.listed !== undefined) {
-      requestBody.listed = Boolean(data.listed);
-    }
-    // Handle dates - convert empty strings to null
-    if (
-      data.datePurchased !== null &&
-      data.datePurchased !== undefined &&
-      data.datePurchased !== ''
-    ) {
-      requestBody.purchase_date = data.datePurchased;
-    } else {
-      requestBody.purchase_date = null;
-    }
-    if (
-      data.dateSold !== null &&
-      data.dateSold !== undefined &&
-      data.dateSold !== ''
-    ) {
-      requestBody.sell_date = data.dateSold;
-    } else {
-      requestBody.sell_date = null;
+    // If quantity is 1, add single item
+    if (itemQuantity === 1) {
+      return this.http
+        .post<any>(this.inventoryURL, buildRequestBody(), {
+          withCredentials: true,
+        })
+        .pipe(
+          tap({
+            next: () => {
+              // Invalidate cache - new item might affect grouping
+              this.invalidateCache();
+            },
+          })
+        );
     }
 
-    // For add, we need full refresh because new item might group with existing SKU
-    // or create new group, so we invalidate cache and let the response refresh
-    return this.http
-      .post<any>(this.inventoryURL, requestBody, {
+    // For bulk add, create multiple requests and combine them
+    // Use forkJoin to execute all requests in parallel
+    const requests = Array.from({ length: itemQuantity }, () =>
+      this.http.post<any>(this.inventoryURL, buildRequestBody(), {
         withCredentials: true,
       })
-      .pipe(
-        tap({
-          next: () => {
-            // Invalidate cache - new item might affect grouping
-            this.invalidateCache();
-          },
-        })
-      );
+    );
+
+    return forkJoin(requests).pipe(
+      tap({
+        next: () => {
+          // Invalidate cache - new items might affect grouping
+          this.invalidateCache();
+        },
+      })
+    );
   }
 
   groupBySku(data: any) {
