@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from './core/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { EnvResolverService } from './core/env-resolver/env-resolver.service';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { EnvResolverService } from './core/env-resolver/env-resolver.service';
   styleUrls: ['app.component.scss'],
   standalone: false,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   public appPages = [
     { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
     { title: 'Dashboard', url: '/folder/dashboard', icon: 'analytics' },
@@ -26,9 +27,12 @@ export class AppComponent implements OnInit {
   private authService = inject(AuthService);
   private http = inject(HttpClient);
   private envService = inject(EnvResolverService);
+  private router = inject(Router);
   loggedIn = false;
+  isLandingPage = false;
+  private routerSubscription?: Subscription;
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   ngOnInit() {
     console.log('Start App');
@@ -38,6 +42,16 @@ export class AppComponent implements OnInit {
     this.authService.loggedIn$.subscribe((isLoggedIn) => {
       this.loggedIn = isLoggedIn;
     });
+
+    // Subscribe to router events to detect landing page
+    this.routerSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.isLandingPage = event.url === '/' || event.url === '';
+      });
+
+    // Check initial route
+    this.isLandingPage = this.router.url === '/' || this.router.url === '';
 
     // Fetch CSRF token first (required for API requests)
     this.authService.fetchCsrfToken().subscribe({
@@ -87,5 +101,11 @@ export class AppComponent implements OnInit {
           }
         },
       });
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }

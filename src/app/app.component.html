@@ -1,7 +1,7 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
     <!-- <app-navbar [loggedIn]="loggedIn"></app-navbar> -->
-    @if (loggedIn) {
+    @if (loggedIn && !isLandingPage) {
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
