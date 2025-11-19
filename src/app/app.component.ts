@@ -108,4 +108,21 @@ export class AppComponent implements OnInit, OnDestroy {
       this.routerSubscription.unsubscribe();
     }
   }
+
+  signOut() {
+    this.http
+      .get<any>(`${this.envService.apiUrl}/auth/logout`, {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log('Logout successful:', response);
+        },
+        error: (error) => {
+          console.error('Logout failed:', error);
+        },
+      });
+    this.loggedIn = false;
+    this.router.navigate(['/']);
+  }
 }
