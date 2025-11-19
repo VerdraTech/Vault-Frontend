@@ -24,6 +24,23 @@ const routes: Routes = [
     loadComponent: () =>
       import('./pages/inventory/inventory.page').then((m) => m.InventoryPage),
   },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./pages/profile/profile.page').then((m) => m.ProfilePage),
+  },
+  {
+    path: 'marketplace',
+    loadComponent: () =>
+      import('./pages/marketplace/marketplace.page').then(
+        (m) => m.MarketplacePage
+      ),
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage),
+  },
 ];
 
 @NgModule({
