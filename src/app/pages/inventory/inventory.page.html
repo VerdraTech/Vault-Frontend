@@ -60,14 +60,13 @@
         <th style="width: 5%" class="table-cell">
           <input type="checkbox"  />
         </th>
-        <th style="width: 5%" class="table-cell">Product</th>
-        <th style="width: 17.5%" class="table-cell"></th>
-        <th style="width: 10%" class="table-cell">Price</th>
-        <th style="width: 12.5%" class="table-cell">Size</th>
-        <th style="width: 12.5%" class="table-cell">SKU</th>
-        <th style="width: 12.5%" class="table-cell">Date Purchased</th>
-        <th style="width: 12.5%" class="table-cell">Location</th>
-        <th style="width: 10%" class="table-cell">Actions</th>
+        <th style="width: 5%" class="table-header">Product</th>
+        <th style="width: 20%" class="table-header"></th>
+        <th style="width: 17.5%" class="table-header">Price</th>
+        <th style="width: 5%" class="table-header">Size</th>
+        <th style="width: 12.5%" class="table-header">Date Purchased</th>
+        <th style="width: 20%" class="table-header">Location</th>
+        <th style="width: 10%" class="table-header"></th>
       </tr>
     </thead>
     <tbody>
@@ -90,15 +89,15 @@
           </td>
           <td class="table-cell">
             {{ itemsArray[0].name }}
+            <div class="item-sku">
+              {{ itemsArray[0].sku }}
+            </div>
           </td>
           <td class="table-cell" >
-            <div >{{ itemsArray[0].price }}</div>
+            <div >${{ itemsArray[0].price }}</div>
           </td>
           <td class="table-cell" >
             <div >{{ itemsArray[0].size }}</div>
-          </td>
-          <td class="table-cell" >
-            <div >{{ itemsArray[0].sku }}</div>
           </td>
           <td class="table-cell" >
             <div >{{ itemsArray[0].datePurchased }}</div>
@@ -122,8 +121,7 @@
                   <ion-icon name="pencil"></ion-icon>
                 </ion-fab-button>
               </ion-fab-list>
-            </ion-fab>
-            <ion-alert></ion-alert>
+            </ion-fab>   
           </td>
         </tr>
         @if (itemsArray.length > 1 && expanded[i]) {
@@ -134,14 +132,11 @@
                 <input type="checkbox" />
               </td>
               <td class="table-cell">
-                <ion-thumbnail>
-                  <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
-                </ion-thumbnail>
+                
               </td>
               <td class="table-cell">{{ item.name }}</td>
-              <td class="table-cell">{{ item.price }}</td>
+              <td class="table-cell">${{ item.price }}</td>
               <td class="table-cell">{{ item.size }}</td>
-              <td class="table-cell">{{ item.sku }}</td>
               <td class="table-cell">{{ item.datePurchased }}</td>
               <td class="table-cell">{{ item.location }}</td>
               <td class="action-menu-td">

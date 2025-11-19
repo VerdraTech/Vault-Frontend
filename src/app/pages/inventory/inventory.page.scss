@@ -32,6 +32,10 @@ ion-searchbar {
   --color: hsl(209, 21%, 19%);
 }
 
+.table-header {
+  padding: 0.75rem 1rem;
+}
+
 .table-cell {
   padding: 0.5rem 1rem;
 }
@@ -41,11 +45,12 @@ ion-searchbar {
 }
 
 .item-sku {
-  color: #59C2FF;
+  color: grey;
+  font-size: small;
 }
 
 .action-menu-td {
-  padding: 1rem 1rem;
+  
 }
 
 .chevron {
