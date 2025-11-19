@@ -4,7 +4,7 @@
   background-color: #FFFF;
   padding: 1rem;
   font-weight: 700;
-  height: 8rem; // 150px
+  height: 10rem;
 }
 
 .chart {
@@ -24,8 +24,30 @@
 }
 
 .dashboard-stat {
-  margin: 2rem 0 0 0; 
+  display: flex;
+  margin: 2rem 0 0 0;
+  flex-direction: column;
+  flex-grow: 0;
+  //font-size: xx-large;
+}
+
+.dashboard-stat-label {
+  font-weight: 500;
+  color: grey;
+  font-size: medium;
+}
+
+.stats {
   font-size: xx-large;
+}
+
+.gain {
+  display: inline-block;
+  border: 1px solid #F1FDF4;
+  border-radius: 5px;
+  background: #F1FDF4;
+  color: #33AB5E;
+  //font-weight: 500;
 }
 
 ion-select::part(container) {
