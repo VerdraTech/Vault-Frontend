@@ -1,6 +1,5 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <!-- <app-navbar [loggedIn]="loggedIn"></app-navbar> -->
     @if (loggedIn && !isLandingPage) {
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
@@ -44,9 +43,9 @@
           </ion-item>
           }
         </ion-list>
-        <!--<ion-item>
-            <ion-button (click)="signOut()">Log Out</ion-button>
-          </ion-item>-->
+        <ion-item>
+          <ion-button (click)="signOut()">Log Out</ion-button>
+        </ion-item>
       </ion-content>
     </ion-menu>
     }
