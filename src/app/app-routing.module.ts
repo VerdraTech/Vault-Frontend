@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -11,6 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'folder/:id',
+    canActivate: [authGuard],
     loadChildren: () =>
       import('./folder/folder.module').then((m) => m.FolderPageModule),
   },

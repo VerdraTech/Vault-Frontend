@@ -77,30 +77,6 @@ export class AppComponent implements OnInit, OnDestroy {
         },
       });
 
-    // Then try to get user info - the interceptor will handle token refresh automatically
-    // Don't manually set loggedIn=false here - let the interceptor handle it
-    this.http
-      .get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true })
-      .subscribe({
-        next: (response) => {
-          console.log('User authenticated:', response.id);
-          this.authService.setUser(response.id);
-          this.authService.setLoggedIn(true);
-        },
-        error: (error) => {
-          // The interceptor will handle 401 errors and attempt refresh
-          // Only log here, don't manually set loggedIn state
-          if (error.status === 401) {
-            console.log(
-              'Authentication check failed - interceptor should have handled refresh'
-            );
-            console.log('Error details:', error.error?.detail || error.message);
-            // Don't set loggedIn=false here - interceptor already handled it
-          } else {
-            console.error('Error checking authentication:', error);
-          }
-        },
-      });
   }
 
   ngOnDestroy() {

@@ -25,11 +25,14 @@
             vault
           </div>
         </div>
+        <div style="display: flex; flex-direction: row;">
+          <div class="login" (click)="navigateLogin()">Login</div>
         <div
           (click)="openWaitlistModal()"
           class="bg-slate-900 hover:bg-slate-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-sm sm:text-lg font-semibold transition-all shadow-md hover:shadow-lg hover:scale-105 cursor-pointer"
         >
           Get early access
+        </div>
         </div>
       </div>
     </nav>

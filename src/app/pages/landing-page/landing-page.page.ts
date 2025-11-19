@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -34,6 +34,7 @@ import { WaitlistModalComponent } from 'src/app/components/waitlist-modal/waitli
 export class LandingPage {
   private http = inject(HttpClient);
   private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
 
   isModalOpen: boolean = false;
   isSubmitting: boolean = false;
@@ -108,5 +109,9 @@ export class LandingPage {
 
   getBackgroundColor(): string {
     return '#ffffff';
+  }
+
+  navigateLogin() {
+    this.router.navigate(['/login']);
   }
 }

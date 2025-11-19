@@ -7,7 +7,7 @@ import {
   SupabaseClient,
 } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { EnvResolverService } from '../env-resolver/env-resolver.service';
 
 @Injectable({
@@ -184,5 +184,19 @@ export class AuthService {
           return of(false);
         })
       );
+  }
+
+  loadInitialData():Observable<any> {
+    return this.httpClient.get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true }).pipe(
+      tap((response) => {
+        this.setUser(response.id);
+        this.setLoggedIn(true);
+      }),
+      catchError((err) => {
+      console.log('Failed to get credentials')
+      this.setLoggedIn(false);
+      return of(null);
+      })
+    )
   }
 }

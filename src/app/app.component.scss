@@ -60,7 +60,8 @@ ion-menu.md ion-item.selected ion-icon {
 
 ion-menu.md ion-item ion-icon {
   // color: #616e7e;
-  color: rgb(216, 218, 224)
+  color: rgb(216, 218, 224);
+  margin-right: 2rem;
 }
 
 ion-menu.md ion-item ion-label {
@@ -94,6 +95,7 @@ ion-menu.ios ion-item.selected ion-icon {
 ion-menu.ios ion-item ion-icon {
   font-size: 24px;
   color: #73849a;
+  margin-right: 2rem;
 }
 
 ion-menu.ios ion-list#labels-list ion-list-header {
