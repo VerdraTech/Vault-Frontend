@@ -13,16 +13,13 @@ import { filter, Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Dashboard', url: '/folder/dashboard', icon: 'analytics' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Inventory', url: '/folder/inventory', icon: 'archive' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Marketplace', url: '/folder/marketplace', icon: 'storefront' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    { title: 'Dashboard', url: '/folder/dashboard', icon: 'stats-chart' },
+    { title: 'Inventory', url: '/folder/inventory', icon: 'cube' },
+    { title: 'Sales', url: '/folder/sales', icon: 'trending-up' },
+    { title: 'Shipping', url: '/folder/shipping', icon: 'car' },
+    { title: 'Analytics', url: '/folder/analytics', icon: 'analytics' },
+    { title: 'Settings', url: '/folder/settings', icon: 'settings' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   private authService = inject(AuthService);
   private http = inject(HttpClient);

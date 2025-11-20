@@ -21,6 +21,8 @@ import { CommonModule, SlicePipe } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { map, merge, Observable } from 'rxjs';
+import * as Papa from 'papaparse'
+import type { OverlayEventDetail } from '@ionic/core';
 
 enum ModalMode {
   ADD = 'add',
@@ -57,6 +59,7 @@ export class InventoryPage implements OnInit {
   items = [];
   items$!: Observable<{ items: Items[]; total: number }>;
   expanded: boolean[] = [];
+  searchForm = new FormControl('');
   filteredInventory$!: Observable<Items[]>;
   filterForm = this.formBuilder.group({
     itemName: [''],
@@ -104,6 +107,9 @@ export class InventoryPage implements OnInit {
 
   ngOnInit() {
     this.items$ = this.inventoryService.getUserInventory();
+    this.inventoryService.getUserInventory().subscribe((response) => {
+      console.log('test', response)
+    })
     this.filteredInventory$ = this.items$.pipe(
       map((response: any) => {
         this.inventoryCount = response.total;
@@ -115,6 +121,9 @@ export class InventoryPage implements OnInit {
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilterAndSearch();
     });
+    this.searchForm.valueChanges.subscribe(() => {
+      //this.applySearch();
+    })
   }
 
   toggleAccordion(index: number) {
@@ -149,7 +158,7 @@ export class InventoryPage implements OnInit {
   async presentAlert(item: Item) {
     const alert = await this.alertController.create({
       header: 'Delete Item',
-      message: `Are you sure you want to delete ${item['name']}? This action is irreversible.`,
+      message: `Are you sure you want to delete ${item.item['name']}? This action is irreversible.`,
       buttons: this.alertButtons,
     });
     alert.present();
@@ -258,5 +267,37 @@ export class InventoryPage implements OnInit {
           return response.items;
         })
       );
+      
+  }
+  
+  onFileSelected(event: any): Items[] {
+    const file: File = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          const csvImportData = this.mapCsvData(result.data)
+          this.inventoryService.csvImport(csvImportData)
+        }
+      })
+    }
+    return [];
+  }
+
+  mapCsvData(data: any): Items[] {
+    const items = data.map((row: any) => ({
+      id: row?.['ID'],
+      name: row['Item Name'],
+      sku: row?.['SKU'],
+      price: (row['Price'] || row['Cost']),
+      size: row['Size'],
+      location: row?.['Location'],
+      datePurchased: row?.['Purchase Date'],
+      dateSold: row?.['Sold Date'],
+      condition: row?.['Condition']
+    }));
+
+    return items;
   }
 }

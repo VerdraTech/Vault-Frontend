@@ -20,11 +20,6 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong class="capitalize">{{ folder }}</strong>
-    <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-
   @if (folder === "inventory") {
     <app-inventory></app-inventory>
   }
@@ -33,5 +28,20 @@
   }
   @if (folder === "dashboard") {
     <app-dashboard></app-dashboard>
+  }
+  @if (folder === "dashboard") {
+    <ion-content [fullscreen]="true">
+      <app-dashboard></app-dashboard>
+    </ion-content>
+  }
+  @if (folder === "sales") {
+    <ion-content [fullscreen]="true">
+      <app-sales></app-sales>
+    </ion-content>
+  }
+  @if (folder === "shipping") {
+    <ion-content [fullscreen]="true">
+      <app-shipping></app-shipping>
+    </ion-content>
   }
 </ion-content>

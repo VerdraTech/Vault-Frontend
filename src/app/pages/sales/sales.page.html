@@ -1,0 +1,116 @@
+<ion-content [fullscreen]="true" [scrollX]="true">
+  <ion-grid style="margin-bottom: 1.5rem; margin-top: 1.5rem">
+    <ion-row class="ion-align-items-center">
+      <ion-col style="display: flex;">
+        <ion-segment value="default" class="tab-label">
+          <ion-segment-button value="default">
+            <div class="segment-label">
+              <ion-label>Pending</ion-label>
+              <ion-badge>4</ion-badge>
+            </div>
+          </ion-segment-button>
+          <ion-segment-button value="segment">
+            <div class="segment-label">
+              <ion-label>Completed</ion-label>
+              <ion-badge>3</ion-badge>
+            </div>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  @if (viewType === 'pending') {
+    <table >
+      <thead>
+        <tr>
+          <th style="width: 5%" class="table-cell">Product</th>
+          <th style="width: 20%" class="table-cell"></th>
+          <th style="width: 15%" class="table-cell">Size</th>
+          <th style="width: 15%" class="table-cell">Price Sold</th>
+          <th style="width: 15%" class="table-cell">Profit</th>
+          <th style="width: 20%" class="table-cell">Date Sold</th>
+          <th style="width: 15%" class="table-cell">Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of queriedInventory | async; track $index; let i = $index) {
+          <tr>
+            <td class="table-cell">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+            </td>
+            <td class="table-cell">
+              {{ item.item['name'] }}
+            </td>
+            <td class="table-cell" >
+              <div >{{ item['size'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >$429.74</div> <!-- sold price -->
+            </td>
+            <td class="table-cell" >
+              <div class="gain">$116.99</div> <!-- add calculations for profit -->
+            </td>
+            <td class="table-cell" >
+              <div >{{ item['sellDate'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div>Urban Kicks</div> <!-- client -->
+            </td>
+          </tr>
+        } @empty {
+          <p>There are no items</p>
+        }
+      </tbody>
+    </table>
+  } @else if (viewType === 'completed') {
+    <table >
+      <thead>
+        <tr>
+          <th style="width: 5%" class="table-cell">Product</th>
+          <th style="width: 20%" class="table-cell"></th>
+          <th style="width: 15%" class="table-cell">Size</th>
+          <th style="width: 15%" class="table-cell">Price Sold</th>
+          <th style="width: 15%" class="table-cell">Profit</th>
+          <th style="width: 20%" class="table-cell">Date Sold</th>
+          <th style="width: 15%" class="table-cell">Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of queriedInventory | async; track $index; let i = $index) {
+          <tr>
+            <td class="table-cell">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+            </td>
+            <td class="table-cell">
+              {{ item.item['name'] }}
+            </td>
+            <td class="table-cell" >
+              <div >{{ item['size'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div >$429.74</div> <!-- sold price -->
+            </td>
+            <td class="table-cell" >
+              <div>$116.99</div> <!-- add calculations for profit -->
+            </td>
+            <td class="table-cell" >
+              <div >{{ item['sellDate'] }}</div>
+            </td>
+            <td class="table-cell" >
+              <div>Urban Kicks</div> <!-- client -->
+            </td>
+          </tr>
+        } @empty {
+          <p>There are no items</p>
+        }
+      </tbody>
+    </table>
+  }
+</ion-content>
+
+

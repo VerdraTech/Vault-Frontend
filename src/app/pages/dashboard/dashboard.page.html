@@ -1,8 +1,271 @@
+<!-- TODO: break down into components when real data comes in -->
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <p>DASHBOARD</p>
+  <ion-grid>
+    <ion-row>
+      <!--<ion-col style="display: flex; justify-content: flex-end;">
+        <ion-select labelPlacement="stacked" label="Filter" fill="outline" placeholder="Select" interface="popover" value="'This Month'" style="width: 20%; margin: 1rem 0 1rem 0;">
+          <ion-select-option value="'This Month'">This Month</ion-select-option>
+          <ion-select-option value="'This Week'">This Week</ion-select-option>
+          <ion-select-option value="'Today'">Today</ion-select-option>
+        </ion-select>
+      </ion-col>-->
+      
+    </ion-row>
+    <div>
+      <h2>Everything at Your Fingertips</h2>
+      <p>Real-time insights into your entire sneaker reselling operation</p>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            <div class="gain">
+              <ion-icon name="logo-usd"></ion-icon>
+            </div>
+            <div class="gain">
+              +12%
+            </div>
+          </div>
+          <div class="dashboard-stat">
+            <div class="dashboard-stat-label">
+              Total Revenue
+            </div>
+            <div class="stats">
+              $45,231
+            </div>
+            <div class="dashboard-stat-label">
+              Last 30 Days
+            </div>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            <div class="gain">
+              <ion-icon name="bag-outline"></ion-icon>
+            </div>
+            <div class="gain">
+              +8%
+            </div>
+          </div>
+          <div class="dashboard-stat">
+            <div class="dashboard-stat-label">
+              Units Sold
+            </div>
+            <div class="stats">
+              342
+            </div>
+            <div class="dashboard-stat-label">
+              This Month
+            </div>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            <div class="gain">
+              <ion-icon name="trending-up-outline"></ion-icon>
+            </div>
+            <div class="gain">
+              Avg
+            </div>
+          </div>
+          <div class="dashboard-stat">
+            <div class="dashboard-stat-label">
+              Profit Margin
+            </div>
+            <div class="stats">
+              $24
+            </div>
+            <div class="dashboard-stat-label">
+              Overall Average
+            </div>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="metric-tile">
+          <div class="dashboard-label">
+            <div class="gain">
+              <ion-icon name="cube-outline"></ion-icon>
+            </div>
+            <div class="gain">
+              Live
+            </div>
+          </div>
+          <div class="dashboard-stat">
+            <div class="dashboard-stat-label">
+              Active Items
+            </div>
+            <div class="stats">
+              156
+            </div>
+            <div class="dashboard-stat-label">
+              In Inventory
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="metric-tile" style="height: 25vh !important; padding: 0 0 0 1rem !important;">
+          <h3>Revenue Trend</h3>
+        </div>
+      </ion-col>
+
+      <ion-col>
+        <div class="metric-tile" style="height: 35vh !important; padding: 0 1rem 0 1rem !important;">
+          <div style="display: flex; justify-content: space-between;">
+            <h3>Top Performers</h3>
+            <p>View All</p>
+          </div>
+          <div style="display: flex; flex-direction: row; margin-bottom: 1rem;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Jordan 1 Retro High OG
+                </div>
+                <div>
+                  Chicago Lost & Found
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  $2450
+                </div>
+                <div>
+                  +$780
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: row; margin-bottom: 1rem;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Jordan 1 Retro High OG
+                </div>
+                <div>
+                  Chicago Lost & Found
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  $2450
+                </div>
+                <div>
+                  +$780
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: row; margin-bottom: 1rem;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Jordan 1 Retro High OG
+                </div>
+                <div>
+                  Chicago Lost & Found
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  $2450
+                </div>
+                <div>
+                  +$780
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col>
+        <div class="chart">
+          <div>
+            Recent Activity
+          </div>
+          <div style="display: flex; flex-direction: row; margin: 1rem 0 1rem 0;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Sale Completed
+                </div>
+                <div>
+                  Jordan 1 High - Size 10 sold for $285
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  2m ago
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: row; margin: 1rem 0 1rem 0;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Sale Completed
+                </div>
+                <div>
+                  Jordan 1 High - Size 10 sold for $285
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  2m ago
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: row; margin: 1rem 0 1rem 0;">
+            <div style="display: grid; grid-template-columns: 0.5fr 3fr 1fr; width: 100%;">
+              <ion-thumbnail>
+                <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+              </ion-thumbnail>
+              <div style="display: flex; flex-direction: column;">
+                <div>
+                  Sale Completed
+                </div>
+                <div>
+                  Jordan 1 High - Size 10 sold for $285
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-self: end;">
+                <div>
+                  2m ago
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -8,9 +8,9 @@ import { Item } from 'src/app/model/item';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule],
+  imports: [IonicModule, ReactiveFormsModule]
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent  implements OnInit {
   private formBuilder = inject(FormBuilder);
 
   @Input() action!: string;
@@ -84,7 +84,6 @@ export class ModalComponent implements OnInit {
         // Ensure quantity is at least 1 for bulk add
         formValue.quantity = Math.max(1, Number(formValue.quantity) || 1);
       }
-      console.log('in here', formValue);
       return this.modalController.dismiss(formValue, this.action);
     } else if (this.itemForm.pristine) {
       return this.modalController.dismiss(null, 'Cancel');

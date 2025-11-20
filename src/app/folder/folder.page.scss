@@ -26,3 +26,9 @@ ion-menu-button {
 #container a {
   text-decoration: none;
 }
+
+@media (prefers-color-scheme: dark) {
+  ion-menu-button {
+  color: #FFFF;
+}
+}

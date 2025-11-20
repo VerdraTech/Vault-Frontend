@@ -1,26 +1,5 @@
 <ion-content [fullscreen]="true" [scrollX]="true" [formGroup]="filterForm">
-  <ion-grid>
-    <ion-row class="ion-align-items-center">
-      <ion-col>
-        <ion-searchbar
-          placeholder="Search Items"
-          show-clear-button="focus"
-          [debounce]="1000"
-          formControlName="itemName"
-        ></ion-searchbar>
-      </ion-col>
-      <ion-col>
-        <ion-button
-          fill="solid"
-          shape="round"
-          (click)="openModal({ item: null, role: 'Add' })"
-        >
-          Add Item
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <div class="filter-box">
+  <!--<div class="filter-box">
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -89,123 +68,135 @@
       </ion-chip>
       }
     </div>
-  </div>
+  </div>-->
 
-  @if (filteredInventory$ | async) {
+  <ion-grid style="margin: 2rem 0 2rem 0;">
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+        <ion-searchbar placeholder="Search Items" show-clear-button="focus" [debounce]="1000"></ion-searchbar>
+      </ion-col>
+      <ion-col style="display: flex; justify-content: flex-end; margin-right: 1.25rem;">
+        <input type="file" #csvInput (change)="onFileSelected($event)" accept=".csv" style="display: none;">
+        <ion-button class="csv-upload" (click)="csvInput.click()">
+          <ion-icon name="download-outline" style="margin-top: -5px; margin-right: 0.5rem;"></ion-icon>
+          Import CSV
+        </ion-button>
+        <ion-button fill="solid" (click)="openModal({ item: null, role: 'Add' })">
+          Add Item
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
   <table>
     <thead>
       <tr>
-        <th style="width: 17.5%" class="table-cell">Name</th>
-        <th style="width: 10%" class="table-cell">Price</th>
-        <th style="width: 12.5%" class="table-cell">Size</th>
-        <th style="width: 12.5%" class="table-cell">SKU</th>
-        <th style="width: 12.5%" class="table-cell">Date Purchased</th>
-        <th style="width: 12.5%" class="table-cell">Date Sold</th>
-        <th style="width: 12.5%" class="table-cell">Location</th>
-        <th style="width: 10%" class="table-cell">Actions</th>
+        <th style="width: 5%" class="table-cell"></th>
+        <th style="width: 5%" class="table-cell">
+          <input type="checkbox"  />
+        </th>
+        <th style="width: 5%" class="table-header">Product</th>
+        <th style="width: 20%" class="table-header"></th>
+        <th style="width: 17.5%" class="table-header">Price</th>
+        <th style="width: 5%" class="table-header">Size</th>
+        <th style="width: 12.5%" class="table-header">Date Purchased</th>
+        <th style="width: 20%" class="table-header">Location</th>
+        <th style="width: 10%" class="table-header"></th>
       </tr>
     </thead>
     <tbody>
-      @for (itemsArray of filteredInventory$ | async; track $index; let i =
-      $index) {
-      <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
-        <td class="table-cell">
-          @if (expanded[i] && itemsArray.length > 1) {
-          <ion-icon
-            name="chevron-down"
-            class="chevron"
-            (click)="toggleAccordion(i)"
-          ></ion-icon>
-          } @else if (!expanded[i] && itemsArray.length > 1) {
-          <ion-icon
-            name="chevron-forward"
-            class="chevron"
-            (click)="toggleAccordion(i)"
-          ></ion-icon>
-          } {{ itemsArray[0].item['name'] }} @if (itemsArray.length > 1) {
-          <ion-chip>{{ itemsArray.length }}</ion-chip>
+      @for (itemsArray of filteredInventory$ | async; track $index; let i = $index) {
+        <tr [ngClass]="itemsArray.length > 1 ? 'accordion' : ''">
+          <td class="table-cell">
+            @if (expanded[i] && itemsArray.length > 1) {
+              <ion-icon name="chevron-down" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
+            } @else if (!expanded[i] && itemsArray.length > 1) {
+              <ion-icon name="chevron-forward" class="chevron" (click)="toggleAccordion(i)"></ion-icon>
+            }
+          </td>
+          <td class="table-cell">
+            <input type="checkbox" />
+          </td>
+          <td class="table-cell">
+            <ion-thumbnail>
+              <img alt="Product Image" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" style="border-radius: 5px;" />
+            </ion-thumbnail>
+          </td>
+          <td class="table-cell">
+            {{ itemsArray[0].item['name'] }}
+            <div class="item-sku">
+              {{ itemsArray[0].item['sku'] }}
+            </div>
+          </td>
+          <td class="table-cell" >
+            <div >${{ itemsArray[0]['acquisitionCost'] }}</div> <!-- TODO: should be price but acquisitionCost for now -->
+          </td>
+          <td class="table-cell" >
+            <div >{{ itemsArray[0].size }}</div>
+          </td>
+          <td class="table-cell" >
+            <div >{{ itemsArray[0].item['purchaseDate'] }}</div>
+          </td>
+          <td class="table-cell" >
+            <div >{{ itemsArray[0].location }}</div>
+          </td>
+          <td class="action-menu-td">
+            <ion-fab #fab style="position: relative;">
+              <ion-fab-button size="small">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+              <ion-fab-list side="start">
+                <ion-fab-button>
+                  <ion-icon name="globe"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="presentAlert(itemsArray[0])">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="openModal({ item: itemsArray[0], role: 'Edit' })">
+                  <ion-icon name="pencil"></ion-icon>
+                </ion-fab-button>
+              </ion-fab-list>
+            </ion-fab>   
+          </td>
+        </tr>
+        @if (itemsArray.length > 1 && expanded[i]) {
+          @for (item of itemsArray | slice:1; track $index; let j = $index; let last = $last ) {
+            <tr class="accordion" [ngClass]="{'accordion-last-item': last}">
+              <td class="table-cell"></td>
+              <td class="table-cell">
+                <input type="checkbox" />
+              </td>
+              <td class="table-cell">
+                
+              </td>
+              <td class="table-cell">{{ item.item.name }}</td>
+              <td class="table-cell">${{ item.acquisitionCost }}</td> <!-- TODO: price -->
+              <td class="table-cell">{{ item.size }}</td>
+              <td class="table-cell">{{ item.item.purchaseDate }}</td>
+              <td class="table-cell">{{ item.location }}</td>
+              <td class="action-menu-td">
+                <ion-fab #fab style="position: relative;">
+                  <ion-fab-button size="small">
+                    <ion-icon name="add"></ion-icon>
+                  </ion-fab-button>
+                  <ion-fab-list side="start">
+                    <ion-fab-button>
+                      <ion-icon name="globe"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button (click)="presentAlert(item)">
+                      <ion-icon name="trash"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button (click)="openModal({ item: item, role: 'Edit' })">
+                      <ion-icon name="pencil"></ion-icon>
+                    </ion-fab-button>
+                  </ion-fab-list>
+                </ion-fab>
+              </td>
+            </tr>
           }
-        </td>
-        <td class="table-cell">
-          <div>{{ itemsArray[0]['acquisitionCost'] }}</div>
-        </td>
-        <td class="table-cell">
-          <div>{{ itemsArray[0].size }}</div>
-        </td>
-        <td class="table-cell">
-          <div>{{ itemsArray[0].item['sku'] }}</div>
-        </td>
-        <td class="table-cell">
-          <div>
-            {{ itemsArray[0].item['purchaseDate'] ?
-            (itemsArray[0].item['purchaseDate'] | date:'MMM d, y') : '-' }}
-          </div>
-        </td>
-        <td class="table-cell">
-          <div>
-            {{ itemsArray[0].item['sellDate'] ? (itemsArray[0].item['sellDate']
-            | date:'MMM d, y') : '-' }}
-          </div>
-        </td>
-        <td class="table-cell">
-          <div>{{ itemsArray[0].location }}</div>
-        </td>
-        <td class="action-menu-td">
-          <ion-fab style="position: relative">
-            <ion-fab-button size="small">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
-            <ion-fab-list side="start">
-              <ion-fab-button (click)="presentAlert(itemsArray[0])">
-                <ion-icon name="trash"></ion-icon>
-              </ion-fab-button>
-              <ion-fab-button
-                (click)="openModal({ item: itemsArray[0], role: 'Edit' })"
-              >
-                <ion-icon name="pencil"></ion-icon>
-              </ion-fab-button>
-            </ion-fab-list>
-          </ion-fab>
-          <ion-alert></ion-alert>
-        </td>
-      </tr>
-      @if (itemsArray.length > 1 && expanded[i]) { @for (item of itemsArray |
-      slice:1; track $index; let j = $index; let last = $last ) {
-      <tr class="accordion" [ngClass]="{ 'accordion-last-item': last }">
-        <td class="table-cell">{{ item.item['name'] }}</td>
-        <td class="table-cell">{{ item['acquisitionCost'] }}</td>
-        <td class="table-cell">{{ item.size }}</td>
-        <td class="table-cell">{{ item.item['sku'] }}</td>
-        <td class="table-cell">
-          {{ item.item['purchaseDate'] ? (item.item['purchaseDate'] | date:'MMM
-          d, y') : '-' }}
-        </td>
-        <td class="table-cell">
-          {{ item.item['sellDate'] ? (item.item['sellDate'] | date:'MMM d, y') :
-          '-' }}
-        </td>
-        <td class="table-cell">{{ item.location }}</td>
-        <td class="action-menu-td">
-          <ion-fab style="position: relative">
-            <ion-fab-button size="small">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
-            <ion-fab-list side="start">
-              <!--<ion-fab-button (click)="cloneItem(i, item)">
-                        <ion-icon name="duplicate"></ion-icon>
-                      </ion-fab-button>-->
-              <ion-fab-button (click)="presentAlert(item)">
-                <ion-icon name="trash"></ion-icon>
-              </ion-fab-button>
-              <ion-fab-button (click)="openModal({ item: item, role: 'Edit' })">
-                <ion-icon name="pencil"></ion-icon>
-              </ion-fab-button>
-            </ion-fab-list>
-          </ion-fab>
-        </td>
-      </tr>
-      } } } @empty {
-      <p>There are no items</p>
+        }
+      } @empty {
+        <p>There are no items</p>
       }
     </tbody>
     <tfoot>
@@ -214,164 +205,4 @@
       </tr>
     </tfoot>
   </table>
-  } @else {
-  <ion-grid style="margin-left: 2rem; margin-right: 2rem; padding: 0">
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="3"
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-      <ion-col
-        ><ion-skeleton-text [animated]="true"></ion-skeleton-text
-      ></ion-col>
-    </ion-row>
-  </ion-grid>
-  }
 </ion-content>

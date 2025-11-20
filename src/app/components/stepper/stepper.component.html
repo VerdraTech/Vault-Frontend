@@ -1,0 +1,55 @@
+<div class="stepper-container">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <span>Carrier</span> •
+        <span>Tracking Number</span>
+      </ion-col>
+      <ion-col class="ion-align-items-center package-destination">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>New York, NY</span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="stepper">
+    @for (step of steps; track $index; let i = $index) {
+      <div class="step">
+        <div
+          class="circle"
+          [class.completed]="i < currentStep"
+          [class.active]="i === currentStep"
+        >
+          @switch (step) {
+            @case ('Pre-Transit') {
+              <ion-icon name="pricetag"></ion-icon>
+            }
+            @case ('Transit') {
+              <ion-icon name="car"></ion-icon>
+            }
+            @case ('Delivered') {
+              <ion-icon name="checkmark-circle"></ion-icon>
+            }
+          }
+        </div>
+        <p class="status-label">{{ step }}</p>
+      </div>
+      <!-- divider between steps -->
+      @if (i < steps.length - 1) {
+        <div
+          class="divider"
+          [class.completed]="i < currentStep"
+        ></div>
+      }
+    }
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-start" style="font-size: small;">
+        Order: 10/24/2024
+      </ion-col>
+      <ion-col class="ion-text-end" style="font-size: small;">
+        <a href="" target="_blank">Track Package</a>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

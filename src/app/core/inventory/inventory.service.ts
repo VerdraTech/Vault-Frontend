@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { Item, Items } from 'src/app/model/item';
-import mockInventory from 'src/app/mock-data/mock-inventory';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
   map,
@@ -11,6 +10,7 @@ import {
   BehaviorSubject,
   tap,
   forkJoin,
+  of,
 } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { EnvResolverService } from '../env-resolver/env-resolver.service';
@@ -24,6 +24,7 @@ export class InventoryService {
   private envService = inject(EnvResolverService);
   apiURL = this.envService.apiUrl;
   inventoryURL = `${this.apiURL}/api/inventory`;
+  tempInventory: Items[] = [];
 
   // Cache for current inventory state
   private inventoryCache$ = new BehaviorSubject<{
@@ -126,9 +127,23 @@ export class InventoryService {
   }
 
   getAllInventory() {
-    return this.http.get<any>(`${this.apiURL}/all?page=1&size=100`, {
+    return this.http.get<any>(`${this.inventoryURL}/all?page=1&size=100`, {
       withCredentials: true,
     });
+  }
+
+  getSalesInventory() {
+    // using this endpoint for now
+    return this.http.get<any>(`${this.inventoryURL}/all?page=1&size=100`, {
+      withCredentials: true,
+    }).pipe(
+      map((response) => {
+        response.items = response.items.map((data: any) => {
+          return this.itemMapper(data);
+        })
+        return response;
+      })
+    )
   }
 
   getAllProd() {
@@ -405,6 +420,14 @@ export class InventoryService {
     );
   }
 
+  bulkAdd(data: any) {
+    return this.http.post<any>(`${this.inventoryURL}/bulk`, { items: data }, { withCredentials: true }).pipe(
+      map((response: any) => {
+        return response;
+      })
+    )
+  }
+
   groupBySku(data: any) {
     if (data.length === 0) {
       return [];
@@ -452,7 +475,6 @@ export class InventoryService {
         id: data.item.id,
         name: data.item.name,
         ownerId: data.item.owner_id,
-        // Dates are on the inventory level, not item level
         purchaseDate: data.purchase_date || null,
         sellDate: data.sell_date || null,
         sku: data.item.sku,
@@ -475,5 +497,24 @@ export class InventoryService {
       default:
         return key;
     }
+  }
+
+  csvImport(data: any) {
+    const bulkData = data.map((item: any) => {
+      return {
+        name: item.name, // Required - product name
+        size: item.size, // Required - shoe size
+        condition: item.condition, // Required - condition (new, used, etc.)
+        sku: item.sku,
+        acquisition_cost: item.acquisitionCost || item.price,
+        location: item.location || null,
+        listed: item.listed || false,
+        purchase_date: item.purchaseDate || null,
+        sell_date: item.dateSold || null,
+      }
+    })
+    this.bulkAdd(bulkData).subscribe((response) => {
+      console.log(response)
+    });
   }
 }
