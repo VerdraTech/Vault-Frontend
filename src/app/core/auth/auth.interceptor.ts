@@ -24,22 +24,17 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     // Clone the request to include credentials (cookies) if not already set
     let clonedRequest = request;
-    if (!request.url.startsWith('http://localhost:4000/api/supabase')) {
-      // Only add credentials for our API calls, not external APIs
-      const headers: { [key: string]: string } = {};
-
-      // Add CSRF token header for all API requests (backend only enforces for non-GET)
-      // Include it for all requests to ensure it's available when needed
-      const csrfToken = this.authService.getCsrfToken();
-      if (csrfToken) {
-        headers['x-csrf-token'] = csrfToken;
-      }
-
-      clonedRequest = request.clone({
-        withCredentials: true,
-        setHeaders: headers,
-      });
+    const headers: { [key: string]: string } = {};
+    // Add CSRF token header for all API requests (backend only enforces for non-GET)
+    // Include it for all requests to ensure it's available when needed
+    const csrfToken = this.authService.getCsrfToken();
+    if (csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
     }
+    clonedRequest = request.clone({
+      withCredentials: true,
+      setHeaders: headers,
+    });
 
     return next.handle(clonedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
