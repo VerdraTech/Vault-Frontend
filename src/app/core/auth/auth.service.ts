@@ -10,7 +10,6 @@ import { EnvResolverService } from '../env-resolver/env-resolver.service';
 export class AuthService {
   private httpClient = inject(HttpClient);
   private envService = inject(EnvResolverService);
-  _session: AuthSession | null = null;
   _loggedIn = new BehaviorSubject<boolean>(false);
   loggedIn$ = this._loggedIn.asObservable();
 
@@ -126,15 +125,15 @@ export class AuthService {
       );
   }
 
-  loadInitialData():Observable<any> {
+  loadInitialData(): Observable<any> {
     return this.httpClient.get<any>(`${this.envService.apiUrl}/auth/me`, { withCredentials: true }).pipe(
       tap((response) => {
         this.setUser(response.id);
         this.setLoggedIn(true);
       }),
       catchError((err) => {
-      console.log('Failed to get credentials')
-      this.setLoggedIn(false);
+        console.log('Failed to get credentials')
+        this.setLoggedIn(false);
       return of(null);
       })
     )

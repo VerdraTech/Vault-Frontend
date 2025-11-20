@@ -1,6 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/core/auth/auth.service';
+import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
@@ -8,31 +6,11 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule]
+  imports: [IonicModule]
 })
-export class LoginPage implements OnInit {
-  private authService = inject(AuthService);
-  private formBuilder = inject(FormBuilder);
-  loginForm: FormGroup = this.buildForm();
+export class LoginPage {
 
   constructor() { }
 
-  ngOnInit() {
-    window.location.href = 'https://localhost:8000/auth/login'
-  }
-
-  buildForm() {
-    this.loginForm = this.formBuilder.group({
-      userName: ['', [ Validators.required ]],
-      password: ['', [ Validators.required ]]
-    })
-    return this.loginForm
-  }
-
-  handleLogin() {
-    const user = this.loginForm.value.userName;
-    const pw = this.loginForm.value.password;
-    this.authService.signIn(user, pw)
-    this.loginForm.reset()
-  }
+  ngOnInit() {}
 }

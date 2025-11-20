@@ -19,6 +19,10 @@ export function initApp(authService: AuthService) {
   return () => authService.loadInitialData();
 }
 
+export function fetchToken(authService: AuthService) {
+  return () => authService.fetchCsrfToken();
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
@@ -28,6 +32,12 @@ export function initApp(authService: AuthService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initApp,
+      deps: [AuthService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: fetchToken,
       deps: [AuthService],
       multi: true,
     },

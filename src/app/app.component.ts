@@ -3,7 +3,7 @@ import { AuthService } from './core/auth/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { EnvResolverService } from './core/env-resolver/env-resolver.service';
-import { filter, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private envService = inject(EnvResolverService);
   private router = inject(Router);
-  loggedIn = false;
+  loggedIn$!: Observable<boolean>;
   isLandingPage = false;
   private routerSubscription?: Subscription;
 
@@ -34,11 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('Start App');
     console.log('API URL:', this.envService.apiUrl);
-
-    // Subscribe to auth state changes
-    this.authService.loggedIn$.subscribe((isLoggedIn) => {
-      this.loggedIn = isLoggedIn;
-    });
+    this.loggedIn$ = this.authService.loggedIn$.pipe(distinctUntilChanged());
 
     // Subscribe to router events to detect landing page
     this.routerSubscription = this.router.events
@@ -49,16 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Check initial route
     this.isLandingPage = this.router.url === '/' || this.router.url === '';
-
-    // Fetch CSRF token first (required for API requests)
-    this.authService.fetchCsrfToken().subscribe({
-      next: (token) => {
-        console.log('CSRF token fetched:', token ? 'success' : 'failed');
-      },
-      error: (error) => {
-        console.error('Failed to fetch CSRF token:', error);
-      },
-    });
 
     // First, check what cookies are available (debug)
     this.http
@@ -73,7 +59,6 @@ export class AppComponent implements OnInit, OnDestroy {
           console.error('Debug endpoint error:', error);
         },
       });
-
   }
 
   ngOnDestroy() {
@@ -95,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
           console.error('Logout failed:', error);
         },
       });
-    this.loggedIn = false;
+    //this.loggedIn = false;
     this.router.navigate(['/']);
   }
 }
