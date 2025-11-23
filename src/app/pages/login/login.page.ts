@@ -11,11 +11,11 @@ import { EnvResolverService } from 'src/app/core/env-resolver/env-resolver.servi
   imports: [IonicModule]
 })
 export class LoginPage {
-  apiUrl = inject(EnvResolverService)
+  private envService = inject(EnvResolverService)
 
   constructor() { }
 
   ngOnInit() {
-    window.location.href = `${this.apiUrl}/auth/login`
+    window.location.href = `${this.envService.apiUrl}/auth/login`
   }
 }
