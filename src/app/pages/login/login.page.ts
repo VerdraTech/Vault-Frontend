@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { EnvResolverService } from 'src/app/core/env-resolver/env-resolver.service';
+
 
 @Component({
   selector: 'app-login',
@@ -9,8 +11,11 @@ import { IonicModule } from '@ionic/angular';
   imports: [IonicModule]
 })
 export class LoginPage {
+  apiUrl = inject(EnvResolverService)
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    window.location.href = `${this.apiUrl}/auth/login`
+  }
 }
